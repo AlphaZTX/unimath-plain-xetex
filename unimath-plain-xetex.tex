@@ -1,0 +1,371 @@
+% unimath-plain-xetex.tex
+\catcode`\@=11
+
+% text font
+%\gdef\mainfontname{Latin Modern Roman}
+\ifdefined\mainfontname\else
+  \gdef\mainfontname{Latin Modern Roman}
+\fi
+\ifdefined\sansfontname\else
+  \gdef\sansfontname{Latin Modern Sans}
+\fi
+\ifdefined\monofontname\else
+  \gdef\monofontname{Latin Modern Mono}
+\fi
+\ifdefined\mathfontname\else
+  \gdef\mathfontname{Latin Modern Math}
+\fi
+\ifcsname XeTeXversion\endcsname
+  \ifdefined\textfontopt\else
+    \def\textfontopt{mapping=tex-text}
+  \fi
+\else
+  \errmessage{umath-plain-xetex Error: Needs XeTeX!}
+\fi
+\font\tenrm     =  "\mainfontname/R:\textfontopt" at 10pt
+\font\tenit     =  "\mainfontname/I:\textfontopt" at 10pt
+\font\tenbf     =  "\mainfontname/B:\textfontopt" at 10pt
+\font\tenbfit   = "\mainfontname/BI:\textfontopt" at 10pt
+\font\tensf     =  "\sansfontname/R:\textfontopt" at 10pt
+\font\tensfit   =  "\sansfontname/I:\textfontopt" at 10pt
+\font\tensfbf   =  "\sansfontname/B:\textfontopt" at 10pt
+\font\tensfbfit = "\sansfontname/BI:\textfontopt" at 10pt
+\font\tentt     =  "\monofontname/R:\textfontopt" at 10pt
+\font\tenttit   =  "\monofontname/I:\textfontopt" at 10pt
+\font\tenttbf   =  "\monofontname/B:\textfontopt" at 10pt
+\font\tenttbfit = "\monofontname/BI:\textfontopt" at 10pt
+\def\genfontcmds#1#2{%
+  \expandafter\font\csname     #1rm\endcsname =  "\mainfontname/R:\textfontopt" at #2
+  \expandafter\font\csname     #1it\endcsname =  "\mainfontname/I:\textfontopt" at #2
+  \expandafter\font\csname     #1bf\endcsname =  "\mainfontname/B:\textfontopt" at #2
+  \expandafter\font\csname   #1bfit\endcsname = "\mainfontname/BI:\textfontopt" at #2
+  \expandafter\font\csname     #1sf\endcsname =  "\sansfontname/R:\textfontopt" at #2
+  \expandafter\font\csname   #1sfit\endcsname =  "\sansfontname/I:\textfontopt" at #2
+  \expandafter\font\csname   #1sfbf\endcsname =  "\sansfontname/B:\textfontopt" at #2
+  \expandafter\font\csname #1sfbfit\endcsname = "\sansfontname/BI:\textfontopt" at #2
+  \expandafter\font\csname     #1tt\endcsname =  "\monofontname/R:\textfontopt" at #2
+  \expandafter\font\csname   #1ttit\endcsname =  "\monofontname/I:\textfontopt" at #2
+  \expandafter\font\csname   #1ttbf\endcsname =  "\monofontname/B:\textfontopt" at #2
+  \expandafter\font\csname #1ttbfit\endcsname = "\monofontname/BI:\textfontopt" at #2
+}
+\genfontcmds{five}{5pt}
+\genfontcmds{seven}{7pt}
+\genfontcmds{nine}{9pt}
+\genfontcmds{twelve}{11.95pt}
+\genfontcmds{twenty}{20pt}
+\def\makefontcmdcompatible#1{%
+  \expandafter\let\csname #1itbf\expandafter\endcsname\csname #1bfit\endcsname
+  \expandafter\let\csname #1itsf\expandafter\endcsname\csname #1sfit\endcsname
+  \expandafter\let\csname #1bfsf\expandafter\endcsname\csname #1sfbf\endcsname
+  \expandafter\let\csname #1sfitbf\expandafter\endcsname\csname #1sfbfit\endcsname
+  \expandafter\let\csname #1bfsfit\expandafter\endcsname\csname #1sfbfit\endcsname
+  \expandafter\let\csname #1bfitsf\expandafter\endcsname\csname #1sfbfit\endcsname
+  \expandafter\let\csname #1itsfbf\expandafter\endcsname\csname #1sfbfit\endcsname
+  \expandafter\let\csname #1itbfsf\expandafter\endcsname\csname #1sfbfit\endcsname
+  \expandafter\let\csname #1ittt\expandafter\endcsname\csname #1ttit\endcsname
+  \expandafter\let\csname #1bftt\expandafter\endcsname\csname #1ttbf\endcsname
+  \expandafter\let\csname #1ttitbf\expandafter\endcsname\csname #1ttbfit\endcsname
+  \expandafter\let\csname #1bfttit\expandafter\endcsname\csname #1ttbfit\endcsname
+  \expandafter\let\csname #1bfittt\expandafter\endcsname\csname #1ttbfit\endcsname
+  \expandafter\let\csname #1itttbf\expandafter\endcsname\csname #1ttbfit\endcsname
+  \expandafter\let\csname #1itbftt\expandafter\endcsname\csname #1ttbfit\endcsname
+}
+
+% math font
+%
+% In plain format, \fam0 is "rm"; \fam1 is "normal"; \fam2 is "cal"; 
+%                  \fam3 is "op"; \fam4 is "it"; \fam5 is "sl";
+%                  \fam6 is "bf"; \fam7 is "tt".
+% Families defined through \newfam: 
+%               \itfam (4), \slfam (5), \bffam (6), \ttfam (7).
+\newfam\unimathfam % \unimathfam = 8
+\newfam\textfam    % \textfam = 9, for text in math mode ("math text")
+
+\font   \tenmath = "\mathfontname:script=math" at 10pt
+\font \sevenmath = "\mathfontname:script=math,+ssty=0" at 7pt
+\font  \fivemath = "\mathfontname:script=math,+ssty=1" at 5pt
+\textfont         \unimathfam =   \tenmath
+\scriptfont       \unimathfam = \sevenmath
+\scriptscriptfont \unimathfam =  \fivemath
+
+% load unicode-math-table
+\let\mathalpha\mathord
+\def\mathfence{F}
+\def\mathaccentwide{Awo}
+\def\mathaccentoverlay{Awo}
+\def\mathover{O}
+\def\mathunder{U}
+\def\mathbotaccent{bA}
+\def\mathbotaccentwide{bAw}
+\def\UnicodeMathSymbol#1#2#3#4{% #1: char slot; #2: cmd; #3: \mathord, etc.
+  \ifx#3\mathord
+    \Umathchardef #2 = 0 \unimathfam #1 
+    \Umathcode    #1 = 0 \unimathfam #1 
+  %\else\ifx#3\mathalpha
+  %  \Umathchardef #2 = 0 \unimathfam #1 
+  %  \Umathcode    #1 = 0 \unimathfam #1 % a \fi in the end
+  \else\ifx#3\mathop
+    \Umathchardef #2 = 1 \unimathfam #1 
+    \Umathcode    #1 = 1 \unimathfam #1 
+  \else\ifx#3\mathbin
+    \Umathchardef #2 = 2 \unimathfam #1 
+    \Umathcode    #1 = 2 \unimathfam #1 
+  \else\ifx#3\mathrel
+    \Umathchardef #2 = 3 \unimathfam #1 
+    \Umathcode    #1 = 3 \unimathfam #1 
+  \else\ifx#3\mathopen
+    \Umathcode    #1 = 4 \unimathfam #1 
+    \Udelcode     #1 =   \unimathfam #1 
+    \gdef#2{\Udelimiter 4 \unimathfam #1 }
+    \ifx#2\sqrt
+      \gdef#2{\Uradical \unimathfam #1 }
+    \fi\ifx#2\cuberoot
+      \gdef#2{\Uradical \unimathfam #1 }
+    \fi\ifx#2\fourthroot
+      \gdef#2{\Uradical \unimathfam #1 }
+    \fi\ifx#2\longdivision
+      \gdef#2{\Uradical \unimathfam #1 }
+    \fi
+  \else\ifx#3\mathclose
+    \Umathcode    #1 = 5 \unimathfam #1 
+    \Udelcode     #1 =   \unimathfam #1 
+    \gdef#2{\Udelimiter 5 \unimathfam #1 }
+  \else\ifx#3\mathpunct
+    \Umathchardef #2 = 6 \unimathfam #1 
+    \Umathcode    #1 = 6 \unimathfam #1 
+  \else\ifx#3\mathfence % 
+    \Umathchardef #2 = 0 \unimathfam #1 
+    \Umathcode    #1 = 0 \unimathfam #1 
+    \Udelcode     #1 =   \unimathfam #1 
+    \gdef#2{\Udelimiter 0 \unimathfam #1 }
+  \else\ifx#3\mathaccent
+    \gdef#2{\Umathaccent fixed 0 \unimathfam #1 }
+  \else\ifx#3\mathaccentwide% or overlay
+    \gdef#2{\Umathaccent 0 \unimathfam #1 }
+  \else\ifx#3\mathbotaccentwide
+    \gdef#2{\Umathaccent bottom 0 \unimathfam #1 }
+  \else\ifx#3\mathover
+    \gdef#2##1{\mathop{\Umathaccent 0 \unimathfam #1 {##1}}\limits}
+  \else\ifx#3\mathunder
+    \gdef#2##1{\mathop{\Umathaccent bottom 0 \unimathfam #1 {##1}}\limits}
+  \else\ifx#3\mathbotaccent% This type's frequency is the lowest.
+    \gdef#2{\Umathaccent bottom fixed 0 \unimathfam #1 }
+  \else% undefined math type
+    \message{There's an undefined math type. Math character command ignored.}%
+  \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+}
+\input unicode-math-table
+
+%\Umathcode `\! = 5 \unimathfam `\!
+\Umathcode `\* = 2 \unimathfam `\*
+%\Umathcode `\+ = 2 \unimathfam `\+
+%\Umathcode `\, = 6 \unimathfam `\,
+\Umathcode `\- = 2 \unimathfam "2212
+%\Umathcode `\. = 0 \unimathfam `\.
+\Umathcode `\: = 3 \unimathfam `\:
+\Umathcode `\; = 6 \unimathfam `\;
+\Umathcode `\< = 3 \unimathfam `\<
+\Umathcode `\= = 3 \unimathfam `\=
+\Umathcode `\> = 3 \unimathfam `\>
+%\Umathcode `\? = 5 \unimathfam `\?
+\Umathcode `\_ = 0 \unimathfam `\_
+%\Umathcode `\| = 0 \unimathfam `\|
+%\Umathcode `\/ = 0 \unimathfam `\/
+%\Umathcode `\\ = 0 \unimathfam `\\
+%\Umathcode `\( = 4 \unimathfam `\(
+%\Umathcode `\) = 5 \unimathfam `\)
+%\Umathcode `\[ = 4 \unimathfam `\[
+%\Umathcode `\] = 5 \unimathfam `\]
+%\Umathcode `\{ = 4 \unimathfam `\{
+%\Umathcode `\} = 5 \unimathfam `\}
+\Umathchardef \colon = 7 \unimathfam `\:
+
+\Umathcode `\0 = 0 \unimathfam "30
+\Umathcode `\1 = 0 \unimathfam "31
+\Umathcode `\2 = 0 \unimathfam "32
+\Umathcode `\3 = 0 \unimathfam "33
+\Umathcode `\4 = 0 \unimathfam "34
+\Umathcode `\5 = 0 \unimathfam "35
+\Umathcode `\6 = 0 \unimathfam "36
+\Umathcode `\7 = 0 \unimathfam "37
+\Umathcode `\8 = 0 \unimathfam "38
+\Umathcode `\9 = 0 \unimathfam "39
+\Umathcode `\A = 0 \unimathfam "1D434
+\Umathcode `\B = 0 \unimathfam "1D435
+\Umathcode `\C = 0 \unimathfam "1D436
+\Umathcode `\D = 0 \unimathfam "1D437
+\Umathcode `\E = 0 \unimathfam "1D438
+\Umathcode `\F = 0 \unimathfam "1D439
+\Umathcode `\G = 0 \unimathfam "1D43A
+\Umathcode `\H = 0 \unimathfam "1D43B
+\Umathcode `\I = 0 \unimathfam "1D43C
+\Umathcode `\J = 0 \unimathfam "1D43D
+\Umathcode `\K = 0 \unimathfam "1D43E
+\Umathcode `\L = 0 \unimathfam "1D43F
+\Umathcode `\M = 0 \unimathfam "1D440
+\Umathcode `\N = 0 \unimathfam "1D441
+\Umathcode `\O = 0 \unimathfam "1D442
+\Umathcode `\P = 0 \unimathfam "1D443
+\Umathcode `\Q = 0 \unimathfam "1D444
+\Umathcode `\R = 0 \unimathfam "1D445
+\Umathcode `\S = 0 \unimathfam "1D446
+\Umathcode `\T = 0 \unimathfam "1D447
+\Umathcode `\U = 0 \unimathfam "1D448
+\Umathcode `\V = 0 \unimathfam "1D449
+\Umathcode `\W = 0 \unimathfam "1D44A
+\Umathcode `\X = 0 \unimathfam "1D44B
+\Umathcode `\Y = 0 \unimathfam "1D44C
+\Umathcode `\Z = 0 \unimathfam "1D44D
+\Umathcode `\a = 0 \unimathfam "1D44E
+\Umathcode `\b = 0 \unimathfam "1D44F
+\Umathcode `\c = 0 \unimathfam "1D450
+\Umathcode `\d = 0 \unimathfam "1D451
+\Umathcode `\e = 0 \unimathfam "1D452
+\Umathcode `\f = 0 \unimathfam "1D453
+\Umathcode `\g = 0 \unimathfam "1D454
+\Umathcode `\h = 0 \unimathfam "0210E % Planck constant
+\Umathcode `\i = 0 \unimathfam "1D456
+\Umathcode `\j = 0 \unimathfam "1D457
+\Umathcode `\k = 0 \unimathfam "1D458
+\Umathcode `\l = 0 \unimathfam "1D459
+\Umathcode `\m = 0 \unimathfam "1D45A
+\Umathcode `\n = 0 \unimathfam "1D45B
+\Umathcode `\o = 0 \unimathfam "1D45C
+\Umathcode `\p = 0 \unimathfam "1D45D
+\Umathcode `\q = 0 \unimathfam "1D45E
+\Umathcode `\r = 0 \unimathfam "1D45F
+\Umathcode `\s = 0 \unimathfam "1D460
+\Umathcode `\t = 0 \unimathfam "1D461
+\Umathcode `\u = 0 \unimathfam "1D462
+\Umathcode `\v = 0 \unimathfam "1D463
+\Umathcode `\w = 0 \unimathfam "1D464
+\Umathcode `\x = 0 \unimathfam "1D465
+\Umathcode `\y = 0 \unimathfam "1D466
+\Umathcode `\z = 0 \unimathfam "1D467
+\Umathcode `\Α = 0 \unimathfam "1D6E2
+\Umathcode `\Β = 0 \unimathfam "1D6E3
+\Umathcode `\Γ = 0 \unimathfam "1D6E4
+\Umathcode `\Δ = 0 \unimathfam "1D6E5
+\Umathcode `\Ε = 0 \unimathfam "1D6E6
+\Umathcode `\Ζ = 0 \unimathfam "1D6E7
+\Umathcode `\Η = 0 \unimathfam "1D6E8
+\Umathcode `\Θ = 0 \unimathfam "1D6E9
+\Umathcode `\Ι = 0 \unimathfam "1D6EA
+\Umathcode `\Κ = 0 \unimathfam "1D6EB
+\Umathcode `\Λ = 0 \unimathfam "1D6EC
+\Umathcode `\Μ = 0 \unimathfam "1D6ED
+\Umathcode `\Ν = 0 \unimathfam "1D6EE
+\Umathcode `\Ξ = 0 \unimathfam "1D6EF
+\Umathcode `\Ο = 0 \unimathfam "1D6F0
+\Umathcode `\Π = 0 \unimathfam "1D6F1
+\Umathcode `\Ρ = 0 \unimathfam "1D6F2
+\Umathcode `\Σ = 0 \unimathfam "1D6F4
+\Umathcode `\Τ = 0 \unimathfam "1D6F5
+\Umathcode `\Υ = 0 \unimathfam "1D6F6
+\Umathcode `\Φ = 0 \unimathfam "1D6F7
+\Umathcode `\Χ = 0 \unimathfam "1D6F8
+\Umathcode `\Ψ = 0 \unimathfam "1D6F9
+\Umathcode `\Ω = 0 \unimathfam "1D6FA
+\Umathcode `\α = 0 \unimathfam "1D6FC
+\Umathcode `\β = 0 \unimathfam "1D6FD
+\Umathcode `\γ = 0 \unimathfam "1D6FE
+\Umathcode `\δ = 0 \unimathfam "1D6FF
+\Umathcode `\ε = 0 \unimathfam "1D700
+\Umathcode `\ζ = 0 \unimathfam "1D701
+\Umathcode `\η = 0 \unimathfam "1D702
+\Umathcode `\θ = 0 \unimathfam "1D703
+\Umathcode `\ι = 0 \unimathfam "1D704
+\Umathcode `\κ = 0 \unimathfam "1D705
+\Umathcode `\λ = 0 \unimathfam "1D706
+\Umathcode `\μ = 0 \unimathfam "1D707
+\Umathcode `\ν = 0 \unimathfam "1D708
+\Umathcode `\ξ = 0 \unimathfam "1D709
+\Umathcode `\ο = 0 \unimathfam "1D70A
+\Umathcode `\π = 0 \unimathfam "1D70B
+\Umathcode `\ρ = 0 \unimathfam "1D70C
+\Umathcode `\ς = 0 \unimathfam "1D70D
+\Umathcode `\σ = 0 \unimathfam "1D70E
+\Umathcode `\τ = 0 \unimathfam "1D70F
+\Umathcode `\υ = 0 \unimathfam "1D710
+\Umathcode `\φ = 0 \unimathfam "1D719
+\Umathcode `\χ = 0 \unimathfam "1D712
+\Umathcode `\ψ = 0 \unimathfam "1D713
+\Umathcode `\ω = 0 \unimathfam "1D714
+\Umathcode `\ϑ = 0 \unimathfam "1D717
+\Umathcode `\ϕ = 0 \unimathfam "1D711
+\Umathcode `\ϖ = 0 \unimathfam "1D71B
+\Umathcode `\ϰ = 0 \unimathfam "1D718
+\Umathcode `\ϱ = 0 \unimathfam "1D71A
+\Umathcode `\ϴ = 0 \unimathfam "1D6F3
+\Umathcode `\ϵ = 0 \unimathfam "1D716
+
+\Umathcode `\Ϝ = 0 \unimathfam "003DC
+\Umathcode `\ϝ = 0 \unimathfam "003DD
+\Umathcode `\϶ = 0 \unimathfam "003F6
+
+\input unimath-plain-alphafams
+
+% Greek letter command
+\let\Alpha=Α      \let\Beta=Β     \let\Gamma=Γ    \let\Delta=Δ
+\let\Epsilon=Ε    \let\Zeta=Ζ     \let\Eta=Η      \let\Theta=Θ
+\let\Iota=Ι       \let\Kappa=Κ    \let\Lambda=Λ   \let\Mu=Μ
+\let\Nu=Ν         \let\Xi=Ξ       \let\Omicron=Ο  \let\Pi=Π
+\let\Rho=Ρ        \let\Sigma=Σ    \let\Tau=Τ      \let\Upsilon=Υ
+\let\Phi=Φ        \let\Chi=Χ      \let\Psi=Ψ      \let\Omega=Ω
+\let\alpha=α      \let\beta=β     \let\gamma=γ    \let\delta=δ
+\let\varepsilon=ε \let\zeta=ζ     \let\eta=η      \let\theta=θ
+\let\iota=ι       \let\kappa=κ    \let\lambda=λ   \let\mu=μ
+\let\nu=ν         \let\xi=ξ       \let\omicron=ο  \let\pi=π
+\let\rho=ρ        \let\varsigma=ς \let\sigma=σ    \let\tau=τ
+\let\upsilon=υ    \let\phi=φ      \let\chi=χ      \let\psi=ψ
+\let\omega=ω      \let\vartheta=ϑ \let\varphi=ϕ   \let\varpi=ϖ
+\let\varkappa=ϰ   \let\varrho=ϱ   \let\varTheta=ϴ \let\epsilon=ϵ
+
+% math commands
+\protected\def\{{\ifmmode\lbrace\else\char`\{\fi} % plain.tex: \let\{=\lbrace
+\protected\def\}{\ifmmode\rbrace\else\char`\}\fi} % plain.tex: \let\}=\rbrace
+\let\neq=\ne
+\let\le=\leq
+\let\ge=\geq
+\let\owns=\ni
+\let\gets=\leftarrow
+\let\to=\rightarrow
+\let\hbar=\hslash
+\def\cdots{\mathinner{\cdotp\mkern-1mu\cdotp\mkern-1mu\cdotp}}
+\Umathchardef \ldotp = 2 \unimathfam "2E
+\def\ldots{\mathinner{\ldotp\mkern-1mu\ldotp\mkern-1mu\ldotp}}
+
+% math and text kerns
+\protected\def\leavevmode@ifvmode{\ifvmode\expandafter\indent\fi}
+\protected\def\,{\ifmmode\mskip\thinmuskip\else
+  \leavevmode@ifvmode\kern.16667em\fi\relax}
+\protected\def\>{\ifmmode\mskip\medmuskip\else
+  \leavevmode@ifvmode\kern.2222em\fi\relax}
+\protected\def\;{\ifmmode\mskip\thickmuskip\else
+  \leavevmode@ifvmode\kern.2777em\fi\relax}
+\protected\def\!{\ifmmode\mskip-\thinmuskip\else
+  \leavevmode@ifvmode\kern-.16667em\fi\relax}
+\def\*{\discretionary{\thinspace\hbox{$\times$}}{}{}}
+
+% text commands
+\chardef\ss="00DF
+\chardef\ae="00E6
+\chardef\oe="0153
+\chardef\o="00F8
+\chardef\AE="00C6
+\chardef\OE="0152
+\chardef\O="00D8
+\chardef\i="0131 \chardef\j="237 % dotless letters
+\chardef\aa="00E5
+\chardef\l="0142
+\chardef\L="0141
+\chardef\AA="00C5
+\protected\def\dag{\ifmmode\mathord{\dagger}\else\char"2020\fi}
+\protected\def\ddag{\ifmmode\mathord{\ddagger}\else\char"2021\fi}
+\chardef\S="00A7
+\chardef\P"00B6
+\chardef\copyright="00A9
+
+\catcode`\@=12
+\tenrm
+\endinput
