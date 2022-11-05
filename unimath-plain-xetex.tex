@@ -1,6 +1,11 @@
 % unimath-plain-xetex.tex
 \catcode`\@=11
 
+\newdimen\@tempdima
+\newdimen\@tempdimb
+\newdimen\@tempdimc
+\newdimen\@tempdimd
+
 % text font
 %\gdef\mainfontname{Latin Modern Roman}
 \ifdefined\mainfontname\else
@@ -22,31 +27,52 @@
 \else
   \errmessage{umath-plain-xetex Error: Needs XeTeX!}
 \fi
+
 \font\tenrm     =  "\mainfontname/R:\textfontopt" at 10pt
 \font\tenit     =  "\mainfontname/I:\textfontopt" at 10pt
 \font\tenbf     =  "\mainfontname/B:\textfontopt" at 10pt
 \font\tenbfit   = "\mainfontname/BI:\textfontopt" at 10pt
-\font\tensf     =  "\sansfontname/R:\textfontopt" at 10pt
-\font\tensfit   =  "\sansfontname/I:\textfontopt" at 10pt
-\font\tensfbf   =  "\sansfontname/B:\textfontopt" at 10pt
-\font\tensfbfit = "\sansfontname/BI:\textfontopt" at 10pt
-\font\tentt     =  "\monofontname/R:\textfontopt" at 10pt
-\font\tenttit   =  "\monofontname/I:\textfontopt" at 10pt
-\font\tenttbf   =  "\monofontname/B:\textfontopt" at 10pt
-\font\tenttbfit = "\monofontname/BI:\textfontopt" at 10pt
-\def\genfontcmds#1#2{%
+% scaling sf and tt
+\newdimen\sf@size
+\newdimen\tt@size
+
+\font\tensf@test = "\sansfontname/R:\textfontopt" at 10pt
+\font\tentt@test = "\monofontname/R:\textfontopt" at 10pt
+
+\@tempdima\fontdimen5\tenrm
+\@tempdimb\fontdimen5\tensf@test
+\gdef\sf@innerratio{\numexpr\dimexpr256\@tempdima/\@tempdimb\relax}
+\@tempdimc\fontdimen5\tentt@test
+\gdef\tt@innerratio{\numexpr\dimexpr256\@tempdima/\@tempdimc\relax}
+\let\tensf@test\relax \let\tentt@test\relax
+
+\def\@sizeat#1{\@tempdimd#1\relax%
+  \sf@size=\dimexpr\sf@innerratio\@tempdimd/256\relax
+  \tt@size=\dimexpr\tt@innerratio\@tempdimd/256\relax
+}
+\@sizeat{10pt}
+\font\tensf     =  "\sansfontname/R:\textfontopt" at \sf@size
+\font\tensfit   =  "\sansfontname/I:\textfontopt" at \sf@size
+\font\tensfbf   =  "\sansfontname/B:\textfontopt" at \sf@size
+\font\tensfbfit = "\sansfontname/BI:\textfontopt" at \sf@size
+\font\tentt     =  "\monofontname/R:\textfontopt" at \tt@size
+\font\tenttit   =  "\monofontname/I:\textfontopt" at \tt@size
+\font\tenttbf   =  "\monofontname/B:\textfontopt" at \tt@size
+\font\tenttbfit = "\monofontname/BI:\textfontopt" at \tt@size
+% other sizes
+\def\genfontcmds#1#2{\@sizeat{#2}%
   \expandafter\font\csname     #1rm\endcsname =  "\mainfontname/R:\textfontopt" at #2
   \expandafter\font\csname     #1it\endcsname =  "\mainfontname/I:\textfontopt" at #2
   \expandafter\font\csname     #1bf\endcsname =  "\mainfontname/B:\textfontopt" at #2
   \expandafter\font\csname   #1bfit\endcsname = "\mainfontname/BI:\textfontopt" at #2
-  \expandafter\font\csname     #1sf\endcsname =  "\sansfontname/R:\textfontopt" at #2
-  \expandafter\font\csname   #1sfit\endcsname =  "\sansfontname/I:\textfontopt" at #2
-  \expandafter\font\csname   #1sfbf\endcsname =  "\sansfontname/B:\textfontopt" at #2
-  \expandafter\font\csname #1sfbfit\endcsname = "\sansfontname/BI:\textfontopt" at #2
-  \expandafter\font\csname     #1tt\endcsname =  "\monofontname/R:\textfontopt" at #2
-  \expandafter\font\csname   #1ttit\endcsname =  "\monofontname/I:\textfontopt" at #2
-  \expandafter\font\csname   #1ttbf\endcsname =  "\monofontname/B:\textfontopt" at #2
-  \expandafter\font\csname #1ttbfit\endcsname = "\monofontname/BI:\textfontopt" at #2
+  \expandafter\font\csname     #1sf\endcsname =  "\sansfontname/R:\textfontopt" at \sf@size
+  \expandafter\font\csname   #1sfit\endcsname =  "\sansfontname/I:\textfontopt" at \sf@size
+  \expandafter\font\csname   #1sfbf\endcsname =  "\sansfontname/B:\textfontopt" at \sf@size
+  \expandafter\font\csname #1sfbfit\endcsname = "\sansfontname/BI:\textfontopt" at \sf@size
+  \expandafter\font\csname     #1tt\endcsname =  "\monofontname/R:\textfontopt" at \tt@size
+  \expandafter\font\csname   #1ttit\endcsname =  "\monofontname/I:\textfontopt" at \tt@size
+  \expandafter\font\csname   #1ttbf\endcsname =  "\monofontname/B:\textfontopt" at \tt@size
+  \expandafter\font\csname #1ttbfit\endcsname = "\monofontname/BI:\textfontopt" at \tt@size
 }
 \genfontcmds{five}{5pt}
 \genfontcmds{seven}{7pt}
