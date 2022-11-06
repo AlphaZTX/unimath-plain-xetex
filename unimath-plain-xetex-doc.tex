@@ -1,0 +1,195 @@
+%!TeXprogram=user0
+\def\mainfontname{erewhon}
+\def\sansfontname{Fira Sans Book}
+\def\monofontname{Source Code Pro}
+\def\mathfontname{Erewhon Math}
+\input unimath-plain-xetex
+
+\def\xetex{X\kern-.125em\lower.5ex\hbox{\char"018E}\kern-.1667em%
+  T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX}
+\let\XeTeX\xetex
+\let\tex\TeX
+\def\latex{L\kern-.24em{\setbox0=\hbox{T}\vbox to \ht0{\hbox{\sevenrm A}\vss}}%
+  \kern-.12em\TeX}
+\def\umpx{unimath-plain-\xetex}
+\def\biggskip{\vskip24pt plus 8pt minus 4pt}
+\def\pkg#1{{\tensf #1}}
+%\catcode`\@=11 \@sizeat{40pt}\the\sf@size \catcode`\@=12
+\font\hugesans="\sansfontname" at 35pt
+\makefontcmdcompatible{ten}
+
+\def\ttverbatim{\begingroup
+  \catcode`\\=12 \catcode`\{=12 \catcode`\}=12 \catcode`\$=12
+  \catcode`\&=12 \catcode`\#=12 \catcode`\%=12 \catcode`\~=12
+  \catcode`\_=12 \catcode`\^=12 \obeyspaces \obeylines \tt}
+\outer\def\begintt{$$\let\par=\endgraf \ttverbatim \parskip=0pt
+  \catcode`\|=0 \rightskip-2pc \ttfinish}
+{\catcode`\|=0 |catcode`|\=12 % | is temporary escape character
+  |obeylines % end of line is active
+  |gdef|ttfinish#1^^M#2\endtt{#1|vbox{#2}|endgroup$$}}
+\catcode`\"=\active
+{\obeylines \gdef"{\ttverbatim \spaceskip.5em \let^^M=\  \let"=\endgroup}}
+\def\<#1>{$\langle${\it#1\/}$\rangle$}
+
+\long\def\scalehbox#1#2#3{%
+  \leavevmode
+  \setbox0\hbox{{#3}}%
+  \setbox1\hbox{%
+    \special{pdf:btrans}%
+    \special{x:scale #1 #2}%
+    \hbox to 0pt{\copy0\hss}%
+    \special{pdf:etrans}%
+  }%
+  \ht1#2\ht0
+  \dp1#2\dp0
+  \hbox to#1\wd0{\box1\kern#1\wd0\hss}%
+}
+
+\newdimen\paperwd
+\newdimen\paperht
+\newdimen\hmarginwd
+\newdimen\vmarginht
+\hsize=12cm
+\vsize=16cm
+\hmarginwd=3cm
+\vmarginht=3cm
+\hoffset=\dimexpr\hmarginwd-1in\relax
+\voffset=\dimexpr\vmarginht-1in\relax
+\paperwd=\dimexpr2\hmarginwd+\hsize\relax
+\paperht=\dimexpr2\vmarginht+\vsize\relax
+\special{papersize=\the\paperwd,\the\paperht}
+\newcount\seccnt
+\seccnt=0
+\long\def\section#1{\penalty-1000\bigskip%
+  \advance\seccnt1\relax\noindent{\twelvebf%
+    \hbox to 0pt{\hss\twentybf\the\seccnt\kern12pt}#1}%
+  \par\medskip\penalty1000}
+\parindent2pc
+
+% title
+\centerline{\twentyrm The 
+  \scalehbox{0.5}{0.5}{%
+  \special{pdf:code q 1 Tr}%
+  {\hugesans\umpx}%
+  \special{pdf:code Q}}
+  package}
+\biggskip
+
+\centerline{AlphaZTX}
+\medskip
+
+\centerline{2022/11/06\quad Version 0.0β}
+\biggskip
+
+\centerline{\bf Abstract}
+\medskip
+{\sf\umpx} package provides OpenType math font support in {\it plain \tex\/} 
+format. The {\sf\umpx} package needs \xetex.
+
+\section{How to use this package?}
+Please notice again that you're using {\it plain\/} format but not 
+\latex\ format. If you are using \latex\ format, please use 
+\pkg{unicode-math} package instead.
+
+In your document, write
+\begintt
+\input unimath-plain-xetex
+\endtt
+Then compile your document with "xetex", you can get OpenType math support 
+in your document. The package will set the math font ``Latin Modern Math'' 
+with ``Latin Modern'' text fonts in default. To change the font, you can 
+define some names before loading the package. For example,
+\begintt
+\def\mainfontname{TeX Gyre Termes}
+\def\sansfontname{TeX Gyre Heros}
+\def\monofontname{TeX Gyre Cursors}
+\def\mathfontname{TeX Gyre Termes Math}
+\input unimath-plain-xetex
+\endtt
+Your text fonts will be set in the first 3 lines and your math font will 
+be set in the fourth line.
+
+Currently, the package supports only font family names to use, if 
+you want to use the file names, you can revise the code in 
+"unimath-plain-xetex.tex".
+
+
+
+\section{Text font commands}
+The package provides text font commands in the format of 
+$$\hbox{"\"\<pt-size>\<family>\<series>\<shape>}$$
+such as "\tensfbfit", "\twelvebf", etc. The packages provides 
+font commands in size of 5\,pt, 7\,pt, 9\,pt, 10\,pt, 12\,pt and 20\,pt, 
+such as "\fiverm", "\sevensf", "\twelvett", etc.
+
+Take ten point as an example,
+$$\vbox{\openup10pt%
+  \halign{ \hfil#\hfil \cr
+  {\twelverm Serif} \cr 
+    \vbox{\openup-8pt\halign{#&\quad#&\quad#\cr 
+                    & Upright  & {\tenit Italic} \cr
+      Medium        & "\tenrm" & "\tenit"        \cr
+      {\tenbf Bold} & "\tenbf" & "\tenbfit"      \cr}} \cr
+  {\twelvesf Sans} \cr 
+    \vbox{\openup-8pt\halign{#&\quad#&\quad#\cr 
+                      & {\tensf Upright}  & {\tensfit Italic} \cr
+      {\tensf Medium} & "\tensf"   & "\tensfit"        \cr
+      {\tensfbf Bold} & "\tensfbf" & "\tensfbfit"      \cr}} \cr
+  {\twelvett Typewritter} \cr
+    \vbox{\openup-8pt\halign{#&\quad#&\quad#\cr 
+                      & {\tentt Upright}  & {\tenttit Italic} \cr
+      {\tentt Medium} & "\tentt"   & "\tenttit"        \cr
+      {\tenttbf Bold} & "\tenttbf" & "\tenttbfit"      \cr}} \cr}}$$
+The font commands can be used as those provided in "plain.tex", for example,
+"{\tenbfit ABC}" yields {\tenbfit ABC}.
+
+But if you would't like to remember that many commands, you can write
+$$\hbox{\tentt"\makefontcmdcompatible"\{\<pt-size>\}}$$
+after loading the package. For example, if you write
+\begintt
+\makefontcmdcompatible{ten}
+\endtt
+the \<family>-\<series>-\<shape> order of "\ten"\<some> commands 
+can be write randomly: writing "\tenbfsfit" is the same as "\tensfbfit".
+
+You can also get more text font commands through the "\genfontcmd" command:
+$$\hbox{\tentt"\genfontcmd"\{\<pt-size>\}\{\<dimension>\}}$$
+For example, 
+\begintt
+\genfontcmd{fortyfour}{44pt}
+\genfontcmd{verytiny}{2bp}
+\endtt
+will make commands like "\fortyfourrm" and "\verytinysfbfit" available.
+
+
+
+\section{Math font commands}
+%Traditional plain \tex\ uses "\fam" mechanism to change the font of letters 
+%and numbers in math mode. But using the "\fam" mechanism to change the face 
+%of a math symbol in an OpenType math font is almost impossible. For example, 
+%the roman ``${\rm A}$'' is encoded U+0041, but the italic math ``$A$'' is 
+%encoded U+1D434.But this problem can be solved through redefining the math 
+%character.
+You can input math formulae just like using traditional plain \tex. But 
+OpenType math font is loaded. For example, "$a{\bf0}={\bf0}$" yields 
+$a{\bf0}={\bf0}$. Available math font commands are listed below:
+\begintt
+\rm, \bf, \it, \bfit,\sf, \sfbf, \sfit, \sfbfit,
+\tt, \cal, \calbf, \bb, \bbit, \frak, \frakbf
+\endtt
+The \<family>-\<series>-\<shape> order of these commands allows being random; 
+"cal" can be replaced by "scr".
+
+This package uses "unicode-math-symbols.tex" to generate math symbol commands, 
+the source file can be found in \pkg{unicode-math} package. To find all of 
+the math symbol commands, you can execute
+\begintt
+texdoc unimath-symbols
+\endtt
+in Terminal.
+
+You can also input Unicode math characters in your document's source file. 
+For example, "$∫_a^b y\,dx$" yields $∫_a^b y\,dx$ and "$$∫_a^b y\,dx.$$" yields 
+$$∫_a^b y\,dx.$$
+
+\bye

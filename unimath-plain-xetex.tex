@@ -38,7 +38,6 @@
 
 \font\tensf@test = "\sansfontname/R:\textfontopt" at 10pt
 \font\tentt@test = "\monofontname/R:\textfontopt" at 10pt
-
 \@tempdima\fontdimen5\tenrm
 \@tempdimb\fontdimen5\tensf@test
 \gdef\sf@innerratio{\numexpr\dimexpr256\@tempdima/\@tempdimb\relax}
@@ -55,12 +54,12 @@
 \font\tensfit   =  "\sansfontname/I:\textfontopt" at \sf@size
 \font\tensfbf   =  "\sansfontname/B:\textfontopt" at \sf@size
 \font\tensfbfit = "\sansfontname/BI:\textfontopt" at \sf@size
-\font\tentt     =  "\monofontname/R:\textfontopt" at \tt@size
-\font\tenttit   =  "\monofontname/I:\textfontopt" at \tt@size
-\font\tenttbf   =  "\monofontname/B:\textfontopt" at \tt@size
-\font\tenttbfit = "\monofontname/BI:\textfontopt" at \tt@size
+\font\tentt     =  "\monofontname/R" at \tt@size
+\font\tenttit   =  "\monofontname/I" at \tt@size
+\font\tenttbf   =  "\monofontname/B" at \tt@size
+\font\tenttbfit = "\monofontname/BI" at \tt@size
 % other sizes
-\def\genfontcmds#1#2{\@sizeat{#2}%
+\def\genfontcmd#1#2{\@sizeat{#2}%
   \expandafter\font\csname     #1rm\endcsname =  "\mainfontname/R:\textfontopt" at #2
   \expandafter\font\csname     #1it\endcsname =  "\mainfontname/I:\textfontopt" at #2
   \expandafter\font\csname     #1bf\endcsname =  "\mainfontname/B:\textfontopt" at #2
@@ -69,16 +68,16 @@
   \expandafter\font\csname   #1sfit\endcsname =  "\sansfontname/I:\textfontopt" at \sf@size
   \expandafter\font\csname   #1sfbf\endcsname =  "\sansfontname/B:\textfontopt" at \sf@size
   \expandafter\font\csname #1sfbfit\endcsname = "\sansfontname/BI:\textfontopt" at \sf@size
-  \expandafter\font\csname     #1tt\endcsname =  "\monofontname/R:\textfontopt" at \tt@size
-  \expandafter\font\csname   #1ttit\endcsname =  "\monofontname/I:\textfontopt" at \tt@size
-  \expandafter\font\csname   #1ttbf\endcsname =  "\monofontname/B:\textfontopt" at \tt@size
-  \expandafter\font\csname #1ttbfit\endcsname = "\monofontname/BI:\textfontopt" at \tt@size
+  \expandafter\font\csname     #1tt\endcsname =  "\monofontname/R" at \tt@size
+  \expandafter\font\csname   #1ttit\endcsname =  "\monofontname/I" at \tt@size
+  \expandafter\font\csname   #1ttbf\endcsname =  "\monofontname/B" at \tt@size
+  \expandafter\font\csname #1ttbfit\endcsname = "\monofontname/BI" at \tt@size
 }
-\genfontcmds{five}{5pt}
-\genfontcmds{seven}{7pt}
-\genfontcmds{nine}{9pt}
-\genfontcmds{twelve}{11.95pt}
-\genfontcmds{twenty}{20pt}
+\genfontcmd{five}{5pt}
+\genfontcmd{seven}{7pt}
+\genfontcmd{nine}{9pt}
+\genfontcmd{twelve}{11.95pt}
+\genfontcmd{twenty}{20pt}
 \def\makefontcmdcompatible#1{%
   \expandafter\let\csname #1itbf\expandafter\endcsname\csname #1bfit\endcsname
   \expandafter\let\csname #1itsf\expandafter\endcsname\csname #1sfit\endcsname
@@ -123,6 +122,14 @@
 \def\mathunder{U}
 \def\mathbotaccent{bA}
 \def\mathbotaccentwide{bAw}
+
+\begingroup%
+  \catcode`\^^@=13
+  \protected\gdef\@activedef#1#2{\begingroup% #1: char code; #2: definition
+    \lccode`\^^@=#1
+    \lowercase{\endgroup\gdef^^@{#2}}}%
+\endgroup%
+
 \def\UnicodeMathSymbol#1#2#3#4{% #1: char slot; #2: cmd; #3: \mathord, etc.
   \ifx#3\mathord
     \Umathchardef #2 = 0 \unimathfam #1 
@@ -133,6 +140,17 @@
   \else\ifx#3\mathop
     \Umathchardef #2 = 1 \unimathfam #1 
     \Umathcode    #1 = 1 \unimathfam #1 
+    % deal with the integral specially
+    \ifnum#1>"222A\ifnum#1<"2A1D
+      \ifnum#1<"2234
+        \gdef#2{\Umathchar 1 \unimathfam #1\nolimits}%
+        \global\mathcode#1="8000 % make #1 active
+        \@activedef{#1}{#2}%
+      \else\ifnum#1>"2A0A
+        \gdef#2{\Umathchar 1 \unimathfam #1\nolimits}%
+        \global\mathcode#1="8000
+        \@activedef{#1}{#2}%
+    \fi\fi\fi\fi
   \else\ifx#3\mathbin
     \Umathchardef #2 = 2 \unimathfam #1 
     \Umathcode    #1 = 2 \unimathfam #1 

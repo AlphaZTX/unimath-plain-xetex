@@ -1,6 +1,7 @@
 % unimath-plain-alphafams.tex
 
-\def\rm{%
+\protected\def\rm{\relax%
+\ifmmode
 % numbers
   \Umathcode `\0 = 0 \unimathfam "30
   \Umathcode `\1 = 0 \unimathfam "31
@@ -122,9 +123,11 @@
   \Umathcode `\ϱ = 0 \unimathfam "003F1
   \Umathcode `\ϴ = 0 \unimathfam "003F4
   \Umathcode `\ϵ = 0 \unimathfam "003F5
+\fi
 \tenrm}
 
-\def\bf{%
+\protected\def\bf{\relax%
+\ifmmode
 % numbers
   \Umathcode `\0 = 0 \unimathfam "1D7CE
   \Umathcode `\1 = 0 \unimathfam "1D7CF
@@ -246,9 +249,11 @@
   \Umathcode `\φ = 0 \unimathfam "1D6DF
   \Umathcode `\ϱ = 0 \unimathfam "1D6E0
   \Umathcode `\ϖ = 0 \unimathfam "1D6E1
+\fi
 \tenbf}
 
-\def\bfit{%
+\protected\def\bfit{\relax%
+\ifmmode
 % There's no bfit numbers in UCS, use bf instead.
   \Umathcode `\0 = 0 \unimathfam "1D7CE
   \Umathcode `\1 = 0 \unimathfam "1D7CF
@@ -370,10 +375,12 @@
   \Umathcode `\φ = 0 \unimathfam "1D753
   \Umathcode `\ϱ = 0 \unimathfam "1D754
   \Umathcode `\ϖ = 0 \unimathfam "1D755
+\fi
 \tenbfit}
 \let\itbf=\bfit
 
-\def\sf{%
+\protected\def\sf{\relax%
+\ifmmode
 % numbers
   \Umathcode `\0 = 0 \unimathfam "1D7E2
   \Umathcode `\1 = 0 \unimathfam "1D7E3
@@ -439,9 +446,11 @@
   \Umathcode `\y = 0 \unimathfam "1D5D2
   \Umathcode `\z = 0 \unimathfam "1D5D3
 % no greek
+\fi
 \tensf}
 
-\def\sfit{%
+\protected\def\sfit{\relax%
+\ifmmode
 % no numbers
 % latin
   \Umathcode `\A = 0 \unimathfam "1D608
@@ -497,10 +506,12 @@
   \Umathcode `\y = 0 \unimathfam "1D63A
   \Umathcode `\z = 0 \unimathfam "1D63B
 % no greek
+\fi
 \tensfit}
 \let\itsf=\sfit
 
-\def\sfbf{%
+\protected\def\sfbf{\relax%
+\ifmmode
 % numbers
   \Umathcode `\0 = 0 \unimathfam "1D7EC
   \Umathcode `\1 = 0 \unimathfam "1D7ED
@@ -622,10 +633,12 @@
   \Umathcode `\φ = 0 \unimathfam "1D78D
   \Umathcode `\ϱ = 0 \unimathfam "1D78E
   \Umathcode `\ϖ = 0 \unimathfam "1D78F
+\fi
 \tensfbf}
 \let\bfsf=\sfbf
 
-\def\sfbfit{%
+\protected\def\sfbfit{\relax%
+\ifmmode
 % no numbers
 % latin
   \Umathcode `\A = 0 \unimathfam "1D63C
@@ -737,6 +750,7 @@
   \Umathcode `\φ = 0 \unimathfam "1D7C7
   \Umathcode `\ϱ = 0 \unimathfam "1D7C8
   \Umathcode `\ϖ = 0 \unimathfam "1D7C9
+\fi
 \tensfbfit}
 \let\sfitbf=\sfbfit
 \let\bfsfit=\sfbfit
@@ -744,7 +758,8 @@
 \let\itsfbf=\sfbfit
 \let\itbfsf=\sfbfit
 
-\def\tt{%
+\protected\def\tt{\relax%
+\ifmmode
 % numbers
   \Umathcode `\0 = 0 \unimathfam "1D7F6
   \Umathcode `\1 = 0 \unimathfam "1D7F7
@@ -809,6 +824,7 @@
   \Umathcode `\x = 0 \unimathfam "1D6A1
   \Umathcode `\y = 0 \unimathfam "1D6A2
   \Umathcode `\z = 0 \unimathfam "1D6A3
+\fi
 % no greek
 \tentt}
 
@@ -871,7 +887,7 @@
 }
 \let\scr=\cal
 
-\def\bfcal{%
+\def\calbf{%
 % no numbers
 % latin
   \Umathcode `\A = 0 \unimathfam "1D4D0
@@ -928,7 +944,9 @@
   \Umathcode `\z = 0 \unimathfam "1D503
 % no greek
 }
-\let\bfscr=\bfcal
+\let\bfcal=\calbf
+\let\scrbf=\calbf
+\let\bfscr=\calbf
 
 \def\bb{%
 % numbers
