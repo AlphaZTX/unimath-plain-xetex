@@ -14,7 +14,6 @@
 \newdimen\@tempdimd
 
 % text font
-%\gdef\mainfontname{Latin Modern Roman}
 \ifdefined\mainfontname\else
   \gdef\mainfontname{Latin Modern Roman}
 \fi
@@ -32,7 +31,7 @@
     \def\textfontopt{mapping=tex-text}
   \fi
 \else
-  \errmessage{umath-plain-xetex Error: Needs XeTeX!}
+  \errmessage{unimath-plain-xetex Error: Needs XeTeX!}
 \fi
 
 \font\tenrm     =  "\mainfontname/R:\textfontopt" at 10pt
@@ -52,7 +51,7 @@
 \gdef\tt@innerratio{\numexpr\dimexpr256\@tempdima/\@tempdimc\relax}
 \let\tensf@test\relax \let\tentt@test\relax
 
-\def\@sizeat#1{\@tempdimd#1\relax%
+\def\@sizeat#1{\@tempdimd#1\relax
   \sf@size=\dimexpr\sf@innerratio\@tempdimd/256\relax
   \tt@size=\dimexpr\tt@innerratio\@tempdimd/256\relax
 }
@@ -406,13 +405,13 @@
 \chardef\AE="00C6
 \chardef\OE="0152
 \chardef\O="00D8
-\chardef\i="0131 \chardef\j="237 % dotless letters
+\chardef\i="0131 \chardef\j="0237 % dotless letters
 \chardef\aa="00E5
 \chardef\l="0142
 \chardef\L="0141
 \chardef\AA="00C5
-\protected\def\dag{\ifmmode\mathord{\dagger}\else\char"2020\fi}
-\protected\def\ddag{\ifmmode\mathord{\ddagger}\else\char"2021\fi}
+\protected\def\dag{\relax\ifmmode\mathord{\dagger}\else\char"2020\fi}
+\protected\def\ddag{\relax\ifmmode\mathord{\ddagger}\else\char"2021\fi}
 \chardef\S="00A7
 \chardef\P"00B6
 \chardef\copyright="00A9
