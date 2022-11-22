@@ -129,6 +129,9 @@
 \def\mathbotaccent{bA}
 \def\mathbotaccentwide{bAw}
 
+\def\sqrt{sqrt} \def\cuberoot{cuberoot}
+\def\fourthroot{fourthroot} \def\longdivision{longdivision}
+
 \begingroup%
   \catcode`\^^@=13
   \protected\gdef\@activedef#1#2{\begingroup% #1: char code; #2: definition
@@ -140,6 +143,7 @@
   \ifx#3\mathord
     \Umathchardef #2 = 0 \unimathfam #1 
     \Umathcode    #1 = 0 \unimathfam #1 
+  % In the future, this module will use another \fam.
   %\else\ifx#3\mathalpha
   %  \Umathchardef #2 = 0 \unimathfam #1 
   %  \Umathcode    #1 = 0 \unimathfam #1 % a \fi in the end
@@ -167,13 +171,13 @@
     \Umathcode    #1 = 4 \unimathfam #1 
     \Udelcode     #1 =   \unimathfam #1 
     \gdef#2{\Udelimiter 4 \unimathfam #1 }
-    \ifx#2\sqrt
+    \ifx#2\sqrt%="221A%
       \gdef#2{\Uradical \unimathfam #1 }
-    \fi\ifx#2\cuberoot
+    \fi\ifx#2\cuberoot%="221B
       \gdef#2{\Uradical \unimathfam #1 }
-    \fi\ifx#2\fourthroot
+    \fi\ifx#2\fourthroot%="221C
       \gdef#2{\Uradical \unimathfam #1 }
-    \fi\ifx#2\longdivision
+    \fi\ifx#2\longdivision%="27CC
       \gdef#2{\Uradical \unimathfam #1 }
     \fi
   \else\ifx#3\mathclose
