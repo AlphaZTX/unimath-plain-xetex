@@ -416,6 +416,23 @@
 \chardef\P"00B6
 \chardef\copyright="00A9
 
+% Primes. Patch on plain.tex, line 735--739
+\newcount\c@primes% \c@primes=0
+% If the quantity of primes were more than 4, use \nonUprim@s instead.
+\newmuskip\betweenprimeskip
+\betweenprimeskip=-2.7mu\relax
+\def\after@prim@s{\ifcase\c@primes\or\prime\or\dprime\or\trprime\or\qprime%
+  \else\nonUprim@s\fi}
+\def\nonUprim@s{\prime\loop\ifnum\c@primes>1 \advance\c@primes by -1%
+  \mskip\betweenprimeskip\prime\repeat}
+\def\prim@s{\advance\c@primes by 1\futurelet\next\pr@m@s}
+\def\pr@m@s{\ifx'\next\let\nxt\pr@@@s \else\ifx^\next\let\nxt\pr@@@t
+  \else\let\nxt\pr@@@f\fi\fi \nxt}
+\def\pr@@@t#1#2{\after@prim@s#2\egroup}
+\def\pr@@@f{\after@prim@s\egroup}
+% The following command aims to avoid to use \dprime, \trprime, etc.
+\def\unicodeprimesoff{\def\after@prim@s{\nonUprim@s}}
+
 \catcode`\@=12
 \tenrm
 \endinput
