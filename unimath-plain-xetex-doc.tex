@@ -23,7 +23,6 @@
 \def\umpx{unimath-plain-\xetex}
 \def\biggskip{\vskip24pt plus 8pt minus 4pt}
 \def\pkg#1{{\tensf #1}}
-%\catcode`\@=11 \@sizeat{40pt}\the\sf@size \catcode`\@=12
 \font\hugesans="\sansfontname" at 35pt
 \font\sevenlmmath="Latin Modern Math:script=math,+ssty=0" at 7pt
 \makefontcmdcompatible{ten}
@@ -69,12 +68,22 @@
 \paperwd=\dimexpr2\hmarginwd+\hsize\relax
 \paperht=\dimexpr2\vmarginht+\vsize\relax
 \special{papersize=\the\paperwd,\the\paperht}
-\newcount\seccnt
-\seccnt=0
-\long\def\section#1{\penalty-1000\bigskip%
-  \advance\seccnt1\relax\noindent{\twelvebf%
-    \hbox to 0pt{\hss\twentybf\the\seccnt\kern12pt}#1}%
-  \par\medskip\penalty1000}
+\long\def\protectedwrite#1#2{\edef\wrt{\write#1{#2}}\wrt}
+
+\newcount\secno
+\secno=0
+\newwrite\tocout
+\edef\tocname{\jobname.toc}
+\openout\tocout=\tocname
+\newread\tocin
+\openin\tocin=\tocname
+\long\outer\def\section#1{\par\bigskip\penalty-1000%
+  \noindent \advance\secno by 1\relax
+  {\twelvebf\hbox to 0pt{\hss\twentybf\the\secno\kern12pt}#1}%
+  \protectedwrite\tocout{\the\secno\quad 
+    #1\leaders\hbox to 1em{\hss.}\hfill\quad}%
+  \write\tocout{\the\pageno\par}%
+  \par\medskip\penalty1000\relax}
 \parindent2pc
 
 % title
@@ -94,8 +103,17 @@
 
 \centerline{\bf Abstract}
 \medskip
+{\leftskip=4pc\rightskip=4pc\parindent=1.5pc
 {\sf\umpx} package provides OpenType math font support in {\it plain \tex\/} 
-format. The {\sf\umpx} package needs \xetex.
+format. The {\sf\umpx} package needs \xetex.\par}
+
+% TOC
+\bigskip
+\centerline{\bf Contents}
+\medskip
+\begingroup\leftskip=4pc\rightskip=4pc\parindent=0pc
+\ifeof\tocin\else\closein\tocin\input\tocname\fi
+\endgroup\bigskip
 
 \section{How to use this package?}
 Please notice again that you're using {\it plain\/} format but not 
@@ -245,4 +263,5 @@ of "\betweenprimeskip" is just like change any math skip, for example,
 \endtt
 This line should also be written {\it after} loading the package.
 
+\closeout\tocout
 \bye
