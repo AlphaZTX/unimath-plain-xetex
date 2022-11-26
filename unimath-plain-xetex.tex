@@ -23,13 +23,8 @@
 \ifdefined\monofontname\else
   \gdef\monofontname{Latin Modern Mono}
 \fi
-\ifdefined\mathfontname\else
-  \gdef\mathfontname{Latin Modern Math}
-\fi
 \ifcsname XeTeXversion\endcsname
-  \ifdefined\textfontopt\else
-    \def\textfontopt{mapping=tex-text}
-  \fi
+  \ifdefined\textfontopt\else\def\textfontopt{mapping=tex-text}\fi
 \else
   \errmessage{unimath-plain-xetex Error: Needs XeTeX!}
 \fi
@@ -102,16 +97,20 @@
   \expandafter\let\csname #1itbftt\expandafter\endcsname\csname #1ttbfit\endcsname
 }
 
-% math font
-%
+% Math Font
 % In plain format, \fam0 is "rm"; \fam1 is "normal"; \fam2 is "cal"; 
 %                  \fam3 is "op"; \fam4 is "it"; \fam5 is "sl";
 %                  \fam6 is "bf"; \fam7 is "tt".
 % Families defined through \newfam: 
-%               \itfam (4), \slfam (5), \bffam (6), \ttfam (7).
-\newfam\unimathfam % \unimathfam = 8
-\newfam\textfam    % \textfam = 9, for text in math mode ("math text")
-
+%                  \itfam (4), \slfam (5), \bffam (6) and \ttfam (7).
+%
+% In XeTeX, there are up to 256 fams (\fam0 to \fam256).
+% Here we just use \chardef to define the fams.
+% Also we abandon plain format's default settings.
+\ifdefined\mathfontname\else
+  \gdef\mathfontname{Latin Modern Math}
+\fi
+\chardef\unimathfam=0 % general fam
 \font   \tenmath = "\mathfontname:script=math" at 10pt
 \font \sevenmath = "\mathfontname:script=math,+ssty=0" at 7pt
 \font  \fivemath = "\mathfontname:script=math,+ssty=1" at 5pt
@@ -119,8 +118,77 @@
 \scriptfont       \unimathfam = \sevenmath
 \scriptscriptfont \unimathfam =  \fivemath
 
-% load unicode-math-table
-\let\mathalpha\mathord
+% math alpha, using OpenType Math font
+\ifdefined\mathalphafontname
+  \chardef\alphafam = 1 % `math alphabet' or `variable class'
+  \font   \tenalpha = "\mathalphafontname:script=math" at 10pt
+  \font \sevenalpha = "\mathalphafontname:script=math,+ssty=0" at 7pt
+  \font  \fivealpha = "\mathalphafontname:script=math,+ssty=1" at 5pt
+  \textfont         \alphafam   =   \tenalpha
+  \scriptfont       \alphafam   = \sevenalpha
+  \scriptscriptfont \alphafam   =  \fivealpha
+\else \let\alphafam=\unimathfam \fi
+% delimiter, influencing \mathopen, \mathclose, \mathfence, \mathover(under)
+\ifdefined\mathdelimiterfontname
+  \chardef\delimiterfam = 2
+  \font   \tendelimiter = "\mathdelimiterfontname:script=math" at 10pt
+  \font \sevendelimiter = "\mathdelimiterfontname:script=math,+ssty=0" at 7pt
+  \font  \fivedelimiter = "\mathdelimiterfontname:script=math,+ssty=1" at 5pt
+  \textfont         \delimiterfam   =   \tendelimiter
+  \scriptfont       \delimiterfam   = \sevendelimiter
+  \scriptscriptfont \delimiterfam   =  \fivedelimiter
+\else \let\delimiterfam=\unimathfam \fi
+% ordinary, influencing \mathord, \mathpunct and `!'
+\ifdefined\mathordfontname
+  \chardef\ordfam = 3
+  \font   \tenord = "\mathordfontname:script=math" at 10pt
+  \font \sevenord = "\mathordfontname:script=math,+ssty=0" at 7pt
+  \font  \fiveord = "\mathordfontname:script=math,+ssty=1" at 5pt
+  \textfont         \ordfam   =   \tenord
+  \scriptfont       \ordfam   = \sevenord
+  \scriptscriptfont \ordfam   =  \fiveord
+\else \let\ordfam=\unimathfam \fi
+% large operator, influencing \mathop
+\ifdefined\mathopfontname
+  \chardef\opfam = 4
+  \font   \tenop = "\mathopfontname:script=math" at 10pt
+  \font \sevenop = "\mathopfontname:script=math,+ssty=0" at 7pt
+  \font  \fiveop = "\mathopfontname:script=math,+ssty=1" at 5pt
+  \textfont         \opfam   =   \tenop
+  \scriptfont       \opfam   = \sevenop
+  \scriptscriptfont \opfam   =  \fiveop
+\else \let\opfam=\unimathfam \fi
+% binary, nfluencing \mathbin and \mathrel
+\ifdefined\mathbinfontname
+  \chardef\binfam = 5
+  \font   \tenbin = "\mathbinfontname:script=math" at 10pt
+  \font \sevenbin = "\mathbinfontname:script=math,+ssty=0" at 7pt
+  \font  \fivebin = "\mathbinfontname:script=math,+ssty=1" at 5pt
+  \textfont         \binfam   =   \tenbin
+  \scriptfont       \binfam   = \sevenbin
+  \scriptscriptfont \binfam   =  \fivebin
+\else \let\binfam=\unimathfam \fi
+% accent, influencing all the accents except \mathover(close)
+\ifdefined\mathaccentfontname
+  \chardef\accentfam = 6
+  \font   \tenaccent = "\mathaccentfontname:script=math" at 10pt
+  \font \sevenaccent = "\mathaccentfontname:script=math,+ssty=0" at 7pt
+  \font  \fiveaccent = "\mathaccentfontname:script=math,+ssty=1" at 5pt
+  \textfont         \accentfam   =   \tenaccent
+  \scriptfont       \accentfam   = \sevenaccent
+  \scriptscriptfont \accentfam   =  \fiveaccent
+\else \let\accentfam=\unimathfam \fi
+% These will be the features in the `long' future:
+%\chardef\romanfam=10
+%\chardef\sansfam=11
+%\chardef\ttfam=12
+%\chardef\calfam=13
+%\chardef\bbfam=14
+%\chardef\frakfam=15
+% In the short future, this package will support user-defined fams.
+
+% loading unicode-math-table
+\def\mathalpha{A}
 \def\mathfence{F}
 \def\mathaccentwide{Awo}
 \def\mathaccentoverlay{Awo}
@@ -128,234 +196,235 @@
 \def\mathunder{U}
 \def\mathbotaccent{bA}
 \def\mathbotaccentwide{bAw}
-
 \def\sqrt{sqrt} \def\cuberoot{cuberoot}
 \def\fourthroot{fourthroot} \def\longdivision{longdivision}
-
+% \@activedef, used like LuaTeX
 \begingroup%
   \catcode`\^^@=13
   \protected\gdef\@activedef#1#2{\begingroup% #1: char code; #2: definition
     \lccode`\^^@=#1
     \lowercase{\endgroup\gdef^^@{#2}}}%
 \endgroup%
-
+% \UnicodeMathSymbol in unicode-math-table
 \def\UnicodeMathSymbol#1#2#3#4{% #1: char slot; #2: cmd; #3: \mathord, etc.
   \ifx#3\mathord
-    \Umathchardef #2 = 0 \unimathfam #1 
-    \Umathcode    #1 = 0 \unimathfam #1 
-  % In the future, this module will use another \fam.
-  %\else\ifx#3\mathalpha
-  %  \Umathchardef #2 = 0 \unimathfam #1 
-  %  \Umathcode    #1 = 0 \unimathfam #1 % a \fi in the end
+    \Umathchardef #2 = 0 \ordfam #1 
+    \Umathcode    #1 = 0 \ordfam #1 
+  \else\ifx#3\mathalpha
+    \Umathchardef #2 = 0 \alphafam #1 
+    \Umathcode    #1 = 0 \alphafam #1
   \else\ifx#3\mathop
-    \Umathchardef #2 = 1 \unimathfam #1 
-    \Umathcode    #1 = 1 \unimathfam #1 
-    % deal with the integral specially
+    \Umathchardef #2 = 1 \opfam #1 
+    \Umathcode    #1 = 1 \opfam #1 
+    % The integrals
     \ifnum#1>"222A\ifnum#1<"2A1D
       \ifnum#1<"2234
-        \gdef#2{\Umathchar 1 \unimathfam #1\nolimits}%
+        \gdef#2{\Umathchar 1 \opfam #1\nolimits}%
         \global\mathcode#1="8000 % make #1 active
         \@activedef{#1}{#2}%
       \else\ifnum#1>"2A0A
-        \gdef#2{\Umathchar 1 \unimathfam #1\nolimits}%
+        \gdef#2{\Umathchar 1 \opfam #1\nolimits}%
         \global\mathcode#1="8000
         \@activedef{#1}{#2}%
     \fi\fi\fi\fi
   \else\ifx#3\mathbin
-    \Umathchardef #2 = 2 \unimathfam #1 
-    \Umathcode    #1 = 2 \unimathfam #1 
+    \Umathchardef #2 = 2 \binfam #1 
+    \Umathcode    #1 = 2 \binfam #1 
   \else\ifx#3\mathrel
-    \Umathchardef #2 = 3 \unimathfam #1 
-    \Umathcode    #1 = 3 \unimathfam #1 
+    \Umathchardef #2 = 3 \binfam #1 
+    \Umathcode    #1 = 3 \binfam #1 
   \else\ifx#3\mathopen
-    \Umathcode    #1 = 4 \unimathfam #1 
-    \Udelcode     #1 =   \unimathfam #1 
-    \gdef#2{\Udelimiter 4 \unimathfam #1 }
-    \ifx#2\sqrt%="221A%
-      \gdef#2{\Uradical \unimathfam #1 }
-    \fi\ifx#2\cuberoot%="221B
-      \gdef#2{\Uradical \unimathfam #1 }
-    \fi\ifx#2\fourthroot%="221C
-      \gdef#2{\Uradical \unimathfam #1 }
-    \fi\ifx#2\longdivision%="27CC
-      \gdef#2{\Uradical \unimathfam #1 }
+    \Umathcode    #1 = 4 \delimiterfam #1 
+    \Udelcode     #1 =   \delimiterfam #1 
+    \gdef#2{\Udelimiter 4 \delimiterfam #1 }
+    \ifx#2\sqrt            % = "221A
+      \gdef#2{\Uradical \delimiterfam #1 }
+    \fi\ifx#2\cuberoot     % = "221B
+      \gdef#2{\Uradical \delimiterfam #1 }
+    \fi\ifx#2\fourthroot   % = "221C
+      \gdef#2{\Uradical \delimiterfam #1 }
+    \fi\ifx#2\longdivision % = "27CC
+      \gdef#2{\Uradical \delimiterfam #1 }
     \fi
-  \else\ifx#3\mathclose
-    \Umathcode    #1 = 5 \unimathfam #1 
-    \Udelcode     #1 =   \unimathfam #1 
-    \gdef#2{\Udelimiter 5 \unimathfam #1 }
+  \else\ifx#3\mathclose    % `!' will be influenced, deal with it later
+    \Umathcode    #1 = 5 \delimiterfam #1 
+    \Udelcode     #1 =   \delimiterfam #1 
+    \gdef#2{\Udelimiter 5 \delimiterfam #1 }
   \else\ifx#3\mathpunct
-    \Umathchardef #2 = 6 \unimathfam #1 
-    \Umathcode    #1 = 6 \unimathfam #1 
-  \else\ifx#3\mathfence % 
-    \Umathchardef #2 = 0 \unimathfam #1 
-    \Umathcode    #1 = 0 \unimathfam #1 
-    \Udelcode     #1 =   \unimathfam #1 
-    \gdef#2{\Udelimiter 0 \unimathfam #1 }
+    \Umathchardef #2 = 6 \ordfam #1 
+    \Umathcode    #1 = 6 \ordfam #1 
+  \else\ifx#3\mathfence    % delimiter, in \mathord
+    \Umathchardef #2 = 0 \delimiterfam #1 
+    \Umathcode    #1 = 0 \delimiterfam #1 
+    \Udelcode     #1 =   \delimiterfam #1 
+    \gdef#2{\Udelimiter 0 \delimiterfam #1 }
   \else\ifx#3\mathaccent
-    \gdef#2{\Umathaccent fixed 0 \unimathfam #1 }
+    \gdef#2{\Umathaccent fixed 0 \accentfam #1 }
   \else\ifx#3\mathaccentwide% or overlay
-    \gdef#2{\Umathaccent 0 \unimathfam #1 }
+    \gdef#2{\Umathaccent 0 \accentfam #1 }
   \else\ifx#3\mathbotaccentwide
-    \gdef#2{\Umathaccent bottom 0 \unimathfam #1 }
+    \gdef#2{\Umathaccent bottom 0 \accentfam #1 }
   \else\ifx#3\mathover
-    \gdef#2##1{\mathop{\Umathaccent 0 \unimathfam #1 {##1}}\limits}
+    \gdef#2##1{\mathop{\Umathaccent 0 \delimiterfam #1 {##1}}\limits}
   \else\ifx#3\mathunder
-    \gdef#2##1{\mathop{\Umathaccent bottom 0 \unimathfam #1 {##1}}\limits}
+    \gdef#2##1{\mathop{\Umathaccent bottom 0 \delimiterfam #1 {##1}}\limits}
   \else\ifx#3\mathbotaccent% This type's frequency is the lowest.
-    \gdef#2{\Umathaccent bottom fixed 0 \unimathfam #1 }
+    \gdef#2{\Umathaccent bottom fixed 0 \accentfam #1 }
   \else% undefined math type
     \message{There's an undefined math type. Math character command ignored.}%
-  \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+  \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
 }
 \input unicode-math-table
+% deal with `!'
+\Umathcode `\! = 5 \ordfam "0021
+\Umathchardef \mathexclam = 4 \ordfam "0021
 
-%\Umathcode `\! = 5 \unimathfam `\!
-\Umathcode `\* = 2 \unimathfam `\*
-%\Umathcode `\+ = 2 \unimathfam `\+
-%\Umathcode `\, = 6 \unimathfam `\,
-\Umathcode `\- = 2 \unimathfam "2212
-%\Umathcode `\. = 0 \unimathfam `\.
-\Umathcode `\: = 3 \unimathfam `\:
-\Umathcode `\; = 6 \unimathfam `\;
-\Umathcode `\< = 3 \unimathfam `\<
-\Umathcode `\= = 3 \unimathfam `\=
-\Umathcode `\> = 3 \unimathfam `\>
-%\Umathcode `\? = 5 \unimathfam `\?
-\Umathcode `\_ = 0 \unimathfam `\_
-%\Umathcode `\| = 0 \unimathfam `\|
-%\Umathcode `\/ = 0 \unimathfam `\/
-%\Umathcode `\\ = 0 \unimathfam `\\
-%\Umathcode `\( = 4 \unimathfam `\(
-%\Umathcode `\) = 5 \unimathfam `\)
-%\Umathcode `\[ = 4 \unimathfam `\[
-%\Umathcode `\] = 5 \unimathfam `\]
-%\Umathcode `\{ = 4 \unimathfam `\{
-%\Umathcode `\} = 5 \unimathfam `\}
-\Umathchardef \colon = 7 \unimathfam `\:
+% other symbols
+\Umathcode `\* = 2 \binfam `\*
+%\Umathcode `\+ = 2 \binfam `\+
+%\Umathcode `\, = 6 \ordfam `\,
+\Umathcode `\- = 2 \binfam "2212
+%\Umathcode `\. = 0 \ordfam `\.
+\Umathcode `\: = 3 \ordfam `\:
+\Umathcode `\; = 6 \ordfam `\;
+\Umathcode `\< = 3 \binfam `\<
+\Umathcode `\= = 3 \binfam `\=
+\Umathcode `\> = 3 \binfam `\>
+%\Umathcode `\? = 5 \ordfam `\?
+\Umathchardef \colon = 7 \ordfam `\:
+\Umathcode `\_ = 0 \ordfam `\_
+%\Umathcode `\| = 0 \delimiterfam `\|
+%\Umathcode `\/ = 0 \delimiterfam `\/
+%\Umathcode `\\ = 0 \delimiterfam `\\
+%\Umathcode `\( = 4 \delimiterfam `\(
+%\Umathcode `\) = 5 \delimiterfam `\)
+%\Umathcode `\[ = 4 \delimiterfam `\[
+%\Umathcode `\] = 5 \delimiterfam `\]
+%\Umathcode `\{ = 4 \delimiterfam `\{
+%\Umathcode `\} = 5 \delimiterfam `\}
 
-\Umathcode `\0 = 0 \unimathfam "30
-\Umathcode `\1 = 0 \unimathfam "31
-\Umathcode `\2 = 0 \unimathfam "32
-\Umathcode `\3 = 0 \unimathfam "33
-\Umathcode `\4 = 0 \unimathfam "34
-\Umathcode `\5 = 0 \unimathfam "35
-\Umathcode `\6 = 0 \unimathfam "36
-\Umathcode `\7 = 0 \unimathfam "37
-\Umathcode `\8 = 0 \unimathfam "38
-\Umathcode `\9 = 0 \unimathfam "39
-\Umathcode `\A = 0 \unimathfam "1D434
-\Umathcode `\B = 0 \unimathfam "1D435
-\Umathcode `\C = 0 \unimathfam "1D436
-\Umathcode `\D = 0 \unimathfam "1D437
-\Umathcode `\E = 0 \unimathfam "1D438
-\Umathcode `\F = 0 \unimathfam "1D439
-\Umathcode `\G = 0 \unimathfam "1D43A
-\Umathcode `\H = 0 \unimathfam "1D43B
-\Umathcode `\I = 0 \unimathfam "1D43C
-\Umathcode `\J = 0 \unimathfam "1D43D
-\Umathcode `\K = 0 \unimathfam "1D43E
-\Umathcode `\L = 0 \unimathfam "1D43F
-\Umathcode `\M = 0 \unimathfam "1D440
-\Umathcode `\N = 0 \unimathfam "1D441
-\Umathcode `\O = 0 \unimathfam "1D442
-\Umathcode `\P = 0 \unimathfam "1D443
-\Umathcode `\Q = 0 \unimathfam "1D444
-\Umathcode `\R = 0 \unimathfam "1D445
-\Umathcode `\S = 0 \unimathfam "1D446
-\Umathcode `\T = 0 \unimathfam "1D447
-\Umathcode `\U = 0 \unimathfam "1D448
-\Umathcode `\V = 0 \unimathfam "1D449
-\Umathcode `\W = 0 \unimathfam "1D44A
-\Umathcode `\X = 0 \unimathfam "1D44B
-\Umathcode `\Y = 0 \unimathfam "1D44C
-\Umathcode `\Z = 0 \unimathfam "1D44D
-\Umathcode `\a = 0 \unimathfam "1D44E
-\Umathcode `\b = 0 \unimathfam "1D44F
-\Umathcode `\c = 0 \unimathfam "1D450
-\Umathcode `\d = 0 \unimathfam "1D451
-\Umathcode `\e = 0 \unimathfam "1D452
-\Umathcode `\f = 0 \unimathfam "1D453
-\Umathcode `\g = 0 \unimathfam "1D454
-\Umathcode `\h = 0 \unimathfam "0210E % Planck constant
-\Umathcode `\i = 0 \unimathfam "1D456
-\Umathcode `\j = 0 \unimathfam "1D457
-\Umathcode `\k = 0 \unimathfam "1D458
-\Umathcode `\l = 0 \unimathfam "1D459
-\Umathcode `\m = 0 \unimathfam "1D45A
-\Umathcode `\n = 0 \unimathfam "1D45B
-\Umathcode `\o = 0 \unimathfam "1D45C
-\Umathcode `\p = 0 \unimathfam "1D45D
-\Umathcode `\q = 0 \unimathfam "1D45E
-\Umathcode `\r = 0 \unimathfam "1D45F
-\Umathcode `\s = 0 \unimathfam "1D460
-\Umathcode `\t = 0 \unimathfam "1D461
-\Umathcode `\u = 0 \unimathfam "1D462
-\Umathcode `\v = 0 \unimathfam "1D463
-\Umathcode `\w = 0 \unimathfam "1D464
-\Umathcode `\x = 0 \unimathfam "1D465
-\Umathcode `\y = 0 \unimathfam "1D466
-\Umathcode `\z = 0 \unimathfam "1D467
-\Umathcode `\Α = 0 \unimathfam "1D6E2
-\Umathcode `\Β = 0 \unimathfam "1D6E3
-\Umathcode `\Γ = 0 \unimathfam "1D6E4
-\Umathcode `\Δ = 0 \unimathfam "1D6E5
-\Umathcode `\Ε = 0 \unimathfam "1D6E6
-\Umathcode `\Ζ = 0 \unimathfam "1D6E7
-\Umathcode `\Η = 0 \unimathfam "1D6E8
-\Umathcode `\Θ = 0 \unimathfam "1D6E9
-\Umathcode `\Ι = 0 \unimathfam "1D6EA
-\Umathcode `\Κ = 0 \unimathfam "1D6EB
-\Umathcode `\Λ = 0 \unimathfam "1D6EC
-\Umathcode `\Μ = 0 \unimathfam "1D6ED
-\Umathcode `\Ν = 0 \unimathfam "1D6EE
-\Umathcode `\Ξ = 0 \unimathfam "1D6EF
-\Umathcode `\Ο = 0 \unimathfam "1D6F0
-\Umathcode `\Π = 0 \unimathfam "1D6F1
-\Umathcode `\Ρ = 0 \unimathfam "1D6F2
-\Umathcode `\Σ = 0 \unimathfam "1D6F4
-\Umathcode `\Τ = 0 \unimathfam "1D6F5
-\Umathcode `\Υ = 0 \unimathfam "1D6F6
-\Umathcode `\Φ = 0 \unimathfam "1D6F7
-\Umathcode `\Χ = 0 \unimathfam "1D6F8
-\Umathcode `\Ψ = 0 \unimathfam "1D6F9
-\Umathcode `\Ω = 0 \unimathfam "1D6FA
-\Umathcode `\α = 0 \unimathfam "1D6FC
-\Umathcode `\β = 0 \unimathfam "1D6FD
-\Umathcode `\γ = 0 \unimathfam "1D6FE
-\Umathcode `\δ = 0 \unimathfam "1D6FF
-\Umathcode `\ε = 0 \unimathfam "1D700
-\Umathcode `\ζ = 0 \unimathfam "1D701
-\Umathcode `\η = 0 \unimathfam "1D702
-\Umathcode `\θ = 0 \unimathfam "1D703
-\Umathcode `\ι = 0 \unimathfam "1D704
-\Umathcode `\κ = 0 \unimathfam "1D705
-\Umathcode `\λ = 0 \unimathfam "1D706
-\Umathcode `\μ = 0 \unimathfam "1D707
-\Umathcode `\ν = 0 \unimathfam "1D708
-\Umathcode `\ξ = 0 \unimathfam "1D709
-\Umathcode `\ο = 0 \unimathfam "1D70A
-\Umathcode `\π = 0 \unimathfam "1D70B
-\Umathcode `\ρ = 0 \unimathfam "1D70C
-\Umathcode `\ς = 0 \unimathfam "1D70D
-\Umathcode `\σ = 0 \unimathfam "1D70E
-\Umathcode `\τ = 0 \unimathfam "1D70F
-\Umathcode `\υ = 0 \unimathfam "1D710
-\Umathcode `\φ = 0 \unimathfam "1D719
-\Umathcode `\χ = 0 \unimathfam "1D712
-\Umathcode `\ψ = 0 \unimathfam "1D713
-\Umathcode `\ω = 0 \unimathfam "1D714
-\Umathcode `\ϑ = 0 \unimathfam "1D717
-\Umathcode `\ϕ = 0 \unimathfam "1D711
-\Umathcode `\ϖ = 0 \unimathfam "1D71B
-\Umathcode `\ϰ = 0 \unimathfam "1D718
-\Umathcode `\ϱ = 0 \unimathfam "1D71A
-\Umathcode `\ϴ = 0 \unimathfam "1D6F3
-\Umathcode `\ϵ = 0 \unimathfam "1D716
-
-\Umathcode `\Ϝ = 0 \unimathfam "003DC
-\Umathcode `\ϝ = 0 \unimathfam "003DD
-\Umathcode `\϶ = 0 \unimathfam "003F6
+\Umathcode `\0 = 0 \alphafam "30
+\Umathcode `\1 = 0 \alphafam "31
+\Umathcode `\2 = 0 \alphafam "32
+\Umathcode `\3 = 0 \alphafam "33
+\Umathcode `\4 = 0 \alphafam "34
+\Umathcode `\5 = 0 \alphafam "35
+\Umathcode `\6 = 0 \alphafam "36
+\Umathcode `\7 = 0 \alphafam "37
+\Umathcode `\8 = 0 \alphafam "38
+\Umathcode `\9 = 0 \alphafam "39
+\Umathcode `\A = 0 \alphafam "1D434
+\Umathcode `\B = 0 \alphafam "1D435
+\Umathcode `\C = 0 \alphafam "1D436
+\Umathcode `\D = 0 \alphafam "1D437
+\Umathcode `\E = 0 \alphafam "1D438
+\Umathcode `\F = 0 \alphafam "1D439
+\Umathcode `\G = 0 \alphafam "1D43A
+\Umathcode `\H = 0 \alphafam "1D43B
+\Umathcode `\I = 0 \alphafam "1D43C
+\Umathcode `\J = 0 \alphafam "1D43D
+\Umathcode `\K = 0 \alphafam "1D43E
+\Umathcode `\L = 0 \alphafam "1D43F
+\Umathcode `\M = 0 \alphafam "1D440
+\Umathcode `\N = 0 \alphafam "1D441
+\Umathcode `\O = 0 \alphafam "1D442
+\Umathcode `\P = 0 \alphafam "1D443
+\Umathcode `\Q = 0 \alphafam "1D444
+\Umathcode `\R = 0 \alphafam "1D445
+\Umathcode `\S = 0 \alphafam "1D446
+\Umathcode `\T = 0 \alphafam "1D447
+\Umathcode `\U = 0 \alphafam "1D448
+\Umathcode `\V = 0 \alphafam "1D449
+\Umathcode `\W = 0 \alphafam "1D44A
+\Umathcode `\X = 0 \alphafam "1D44B
+\Umathcode `\Y = 0 \alphafam "1D44C
+\Umathcode `\Z = 0 \alphafam "1D44D
+\Umathcode `\a = 0 \alphafam "1D44E
+\Umathcode `\b = 0 \alphafam "1D44F
+\Umathcode `\c = 0 \alphafam "1D450
+\Umathcode `\d = 0 \alphafam "1D451
+\Umathcode `\e = 0 \alphafam "1D452
+\Umathcode `\f = 0 \alphafam "1D453
+\Umathcode `\g = 0 \alphafam "1D454
+\Umathcode `\h = 0 \alphafam "0210E % Planck constant
+\Umathcode `\i = 0 \alphafam "1D456
+\Umathcode `\j = 0 \alphafam "1D457
+\Umathcode `\k = 0 \alphafam "1D458
+\Umathcode `\l = 0 \alphafam "1D459
+\Umathcode `\m = 0 \alphafam "1D45A
+\Umathcode `\n = 0 \alphafam "1D45B
+\Umathcode `\o = 0 \alphafam "1D45C
+\Umathcode `\p = 0 \alphafam "1D45D
+\Umathcode `\q = 0 \alphafam "1D45E
+\Umathcode `\r = 0 \alphafam "1D45F
+\Umathcode `\s = 0 \alphafam "1D460
+\Umathcode `\t = 0 \alphafam "1D461
+\Umathcode `\u = 0 \alphafam "1D462
+\Umathcode `\v = 0 \alphafam "1D463
+\Umathcode `\w = 0 \alphafam "1D464
+\Umathcode `\x = 0 \alphafam "1D465
+\Umathcode `\y = 0 \alphafam "1D466
+\Umathcode `\z = 0 \alphafam "1D467
+\Umathcode `\Α = 0 \alphafam "1D6E2
+\Umathcode `\Β = 0 \alphafam "1D6E3
+\Umathcode `\Γ = 0 \alphafam "1D6E4
+\Umathcode `\Δ = 0 \alphafam "1D6E5
+\Umathcode `\Ε = 0 \alphafam "1D6E6
+\Umathcode `\Ζ = 0 \alphafam "1D6E7
+\Umathcode `\Η = 0 \alphafam "1D6E8
+\Umathcode `\Θ = 0 \alphafam "1D6E9
+\Umathcode `\Ι = 0 \alphafam "1D6EA
+\Umathcode `\Κ = 0 \alphafam "1D6EB
+\Umathcode `\Λ = 0 \alphafam "1D6EC
+\Umathcode `\Μ = 0 \alphafam "1D6ED
+\Umathcode `\Ν = 0 \alphafam "1D6EE
+\Umathcode `\Ξ = 0 \alphafam "1D6EF
+\Umathcode `\Ο = 0 \alphafam "1D6F0
+\Umathcode `\Π = 0 \alphafam "1D6F1
+\Umathcode `\Ρ = 0 \alphafam "1D6F2
+\Umathcode `\Σ = 0 \alphafam "1D6F4
+\Umathcode `\Τ = 0 \alphafam "1D6F5
+\Umathcode `\Υ = 0 \alphafam "1D6F6
+\Umathcode `\Φ = 0 \alphafam "1D6F7
+\Umathcode `\Χ = 0 \alphafam "1D6F8
+\Umathcode `\Ψ = 0 \alphafam "1D6F9
+\Umathcode `\Ω = 0 \alphafam "1D6FA
+\Umathcode `\α = 0 \alphafam "1D6FC
+\Umathcode `\β = 0 \alphafam "1D6FD
+\Umathcode `\γ = 0 \alphafam "1D6FE
+\Umathcode `\δ = 0 \alphafam "1D6FF
+\Umathcode `\ε = 0 \alphafam "1D700
+\Umathcode `\ζ = 0 \alphafam "1D701
+\Umathcode `\η = 0 \alphafam "1D702
+\Umathcode `\θ = 0 \alphafam "1D703
+\Umathcode `\ι = 0 \alphafam "1D704
+\Umathcode `\κ = 0 \alphafam "1D705
+\Umathcode `\λ = 0 \alphafam "1D706
+\Umathcode `\μ = 0 \alphafam "1D707
+\Umathcode `\ν = 0 \alphafam "1D708
+\Umathcode `\ξ = 0 \alphafam "1D709
+\Umathcode `\ο = 0 \alphafam "1D70A
+\Umathcode `\π = 0 \alphafam "1D70B
+\Umathcode `\ρ = 0 \alphafam "1D70C
+\Umathcode `\ς = 0 \alphafam "1D70D
+\Umathcode `\σ = 0 \alphafam "1D70E
+\Umathcode `\τ = 0 \alphafam "1D70F
+\Umathcode `\υ = 0 \alphafam "1D710
+\Umathcode `\φ = 0 \alphafam "1D719
+\Umathcode `\χ = 0 \alphafam "1D712
+\Umathcode `\ψ = 0 \alphafam "1D713
+\Umathcode `\ω = 0 \alphafam "1D714
+\Umathcode `\ϑ = 0 \alphafam "1D717
+\Umathcode `\ϕ = 0 \alphafam "1D711
+\Umathcode `\ϖ = 0 \alphafam "1D71B
+\Umathcode `\ϰ = 0 \alphafam "1D718
+\Umathcode `\ϱ = 0 \alphafam "1D71A
+\Umathcode `\ϴ = 0 \alphafam "1D6F3
+\Umathcode `\ϵ = 0 \alphafam "1D716
+% Some rarely-used Greek letters
+\Umathcode `\Ϝ = 0 \alphafam "003DC
+\Umathcode `\ϝ = 0 \alphafam "003DD
+\Umathcode `\϶ = 0 \alphafam "003F6
 
 \input unimath-plain-alphafams
 
@@ -386,7 +455,7 @@
 \let\to=\rightarrow
 \let\hbar=\hslash
 \def\cdots{\mathinner{\cdotp\mkern-1mu\cdotp\mkern-1mu\cdotp}}
-\Umathchardef \ldotp = 2 \unimathfam "2E
+\Umathchardef \ldotp = 2 \ordfam "2E
 \def\ldots{\mathinner{\ldotp\mkern-1mu\ldotp\mkern-1mu\ldotp}}
 
 % math and text kerns

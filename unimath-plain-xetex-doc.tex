@@ -81,8 +81,8 @@
   \noindent \advance\secno by 1\relax
   {\twelvebf\hbox to 0pt{\hss\twentybf\the\secno\kern12pt}#1}%
   \protectedwrite\tocout{\the\secno\quad 
-    #1\leaders\hbox to 1em{\hss.}\hfill\quad}%
-  \write\tocout{\the\pageno\par}%
+    #1\hskip.5em\leaders\hbox to 1.2em{.\hss}\hfill}%
+  \write\tocout{\hbox to .5em{\hss\the\pageno}\par}%
   \par\medskip\penalty1000\relax}
 \parindent2pc
 
@@ -98,7 +98,7 @@
 \centerline{Zhang Tingxuan}
 \medskip
 
-\centerline{2022/11/23\quad Version 0.0γ}
+\centerline{2022/11/26\quad Version 0.1}
 \biggskip
 
 \centerline{\bf Abstract}
@@ -262,6 +262,47 @@ of "\betweenprimeskip" is just like change any math skip, for example,
 \betweenprimeskip=-1mu
 \endtt
 This line should also be written {\it after} loading the package.
+
+\section{Using multiple math fonts}
+You can use more than one OpenType math fonts in math mode. 
+This is the method to set multiple math fonts:
+$$\vbox{%
+  \hbox{"\def\mathalphafontname{"\<font family name>"}"}%
+  \hbox{"\def\mathdelimiterfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathordfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathopfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathbinfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathaccentfontname{"\<font family name>"}"}%
+}$$
+Such definitions should be written {\tenit before} "\input"ing the package. 
+For example, 
+\begintt
+\def\mathfontname{XITS Math}
+\def\mathalphafontname{TeX Gyre Pagella Math}
+\input unimath-plain-xetex
+\endtt
+Then your math font will be set as XITS Math and the font of variable family 
+(numbers, Latin and Greek letters) will be set as \TeX\ Gyre Pagella Math.
+
+"\mathalphafontname" will influence the font of numbers ("0"--"9"), Latin 
+letters ("A"--"Z", "a"--"z") and Greek letters ("\alpha" and so on). 
+
+"\mathdelimiterfontname" will influence the font of math delimiters, 
+including some open symbols, close symbols and some ordinary symbols 
+which can be used as delimiters like "\{", "\}", "\vert" and so on. 
+Horizontal delimiters (or very long accents) are also influenced by 
+"\mathdelimiterfontname".
+
+"\mathordfontname" will influence the font of non-delimiter ordinary 
+symbols, punctuations and ``"!"''. For example, ``","'', ``":"'' and 
+"\colon"'s font will be influenced by it.
+
+"\mathopfontname" will influence the font of large operators like "\sum".
+
+"\mathbinfontname" will influence the font of binary operators and relations 
+like ``"+"'' and ``"="''.
+
+"\mathaccentfontname" will influence the font of math accents like "\dot".
 
 \closeout\tocout
 \bye
