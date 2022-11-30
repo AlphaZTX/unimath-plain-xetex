@@ -10,6 +10,7 @@
 \def\sansfontname{Fira Sans Book}
 \def\monofontname{Source Code Pro}
 \def\mathfontname{Erewhon Math}
+\def\textfontopt{mapping=tex-text,}
 \input unimath-plain-xetex
 \unicodeprimesoff
 \betweenprimeskip=-1mu\relax
@@ -24,13 +25,14 @@
 \def\biggskip{\vskip24pt plus 8pt minus 4pt}
 \def\pkg#1{{\tensf #1}}
 \font\hugesans="\sansfontname" at 35pt
+\font\Hugesansbf="\sansfontname/B" at 72pt
 \font\sevenlmmath="Latin Modern Math:script=math,+ssty=0" at 7pt
 \makefontcmdcompatible{ten}
 
 \def\ttverbatim{\begingroup
   \catcode`\\=12 \catcode`\{=12 \catcode`\}=12 \catcode`\$=12
   \catcode`\&=12 \catcode`\#=12 \catcode`\%=12 \catcode`\~=12
-  \catcode`\_=12 \catcode`\^=12 \obeyspaces \obeylines \tt}
+  \catcode`\_=12 \catcode`\^=12 \obeyspaces \obeylines \tentt}
 \outer\def\begintt{$$\let\par=\endgraf \ttverbatim \parskip=0pt
   \catcode`\|=0 \rightskip-2pc \ttfinish}
 {\catcode`\|=0 |catcode`|\=12 % | is temporary escape character
@@ -54,6 +56,9 @@
   \dp1#2\dp0
   \hbox to#1\wd0{\box1\kern#1\wd0\hss}%
 }
+\long\def\colorspec#1#2#3#4{\special{pdf:code q #1 #2 #3 rg}#4%
+  \special{pdf:code Q}}
+\def\green{\colorspec{0.08}{0.52}{0.08}}
 
 \newdimen\paperwd
 \newdimen\paperht
@@ -68,6 +73,9 @@
 \paperwd=\dimexpr2\hmarginwd+\hsize\relax
 \paperht=\dimexpr2\vmarginht+\vsize\relax
 \special{papersize=\the\paperwd,\the\paperht}
+\headline={\ifnum\pageno=1\hss\else\hss\vbox to 0pt{\vss\hbox to 0pt{\kern28pt%
+  \colorspec{0.72}{0.88}{0.72}{\Hugesansbf\folio}\hss}\kern4pt}\fi}
+\footline={\hss}
 \long\def\protectedwrite#1#2{\edef\wrt{\write#1{#2}}\wrt}
 
 \newcount\secno
@@ -79,20 +87,21 @@
 \openin\tocin=\tocname
 \long\outer\def\section#1{\par\bigskip\penalty-1000%
   \noindent \advance\secno by 1\relax
-  {\twelvebf\hbox to 0pt{\hss\twentybf\the\secno\kern12pt}#1}%
+  {\green{%
+    \twelvebf\hbox to 0pt{\hss\twentybf\the\secno\kern12pt}#1%
+  }}%
   \protectedwrite\tocout{\the\secno\quad 
     #1\hskip.5em\leaders\hbox to 1.2em{.\hss}\hfill}%
   \write\tocout{\hbox to .5em{\hss\the\pageno}\par}%
   \par\medskip\penalty1000\relax}
-\parindent2pc
+\parindent=2pc
+\parskip=3pt plus 2pt minus 1pt\relax
 
 % title
-\centerline{\twentyrm The 
-  \scalehbox{0.5}{0.5}{%
-  \special{pdf:code q 1 Tr}%
-  {\hugesans\umpx}%
-  \special{pdf:code Q}}
-  package}
+\centerline{\twentyrm The
+  \scalehbox{0.5}{0.5}{\special{pdf:code q 1 Tr}%
+    {\hugesans\umpx}%
+  \special{pdf:code Q}} package}
 \biggskip
 
 \centerline{Zhang Tingxuan}
@@ -102,18 +111,19 @@
 \biggskip
 
 \centerline{\bf Abstract}
-\medskip
-{\leftskip=4pc\rightskip=4pc\parindent=1.5pc
+\smallskip
+\begingroup\leftskip=4pc\rightskip=4pc\parindent=1.5pc
 {\sf\umpx} package provides OpenType math font support in {\it plain \tex\/} 
-format. The {\sf\umpx} package needs \xetex.\par}
+format. The {\sf\umpx} package needs \xetex.\par\endgroup
 
 % TOC
 \bigskip
 \centerline{\bf Contents}
-\medskip
-\begingroup\leftskip=4pc\rightskip=4pc\parindent=0pc
+\smallskip
+\begingroup\leftskip=4pc\rightskip=4pc\parindent=0pc\parskip0pt\relax
 \ifeof\tocin\else\closein\tocin\input\tocname\fi
 \endgroup\bigskip
+
 
 \section{How to use this package?}
 Please notice again that you're using {\it plain\/} format but not 
@@ -152,23 +162,20 @@ font commands in size of 5\,pt, 7\,pt, 9\,pt, 10\,pt, 12\,pt and 20\,pt,
 such as "\fiverm", "\sevensf", "\twelvett", etc.
 
 Take ten point as an example,
-$$\vbox{\openup10pt%
-  \halign{ \hfil#\hfil \cr
-  {\twelverm Serif} \cr 
-    \vbox{\openup-8pt\halign{#&\quad#&\quad#\cr 
-                    & Upright  & {\tenit Italic} \cr
-      Medium        & "\tenrm" & "\tenit"        \cr
-      {\tenbf Bold} & "\tenbf" & "\tenbfit"      \cr}} \cr
-  {\twelvesf Sans} \cr 
-    \vbox{\openup-8pt\halign{#&\quad#&\quad#\cr 
-                      & {\tensf Upright}  & {\tensfit Italic} \cr
-      {\tensf Medium} & "\tensf"   & "\tensfit"        \cr
-      {\tensfbf Bold} & "\tensfbf" & "\tensfbfit"      \cr}} \cr
-  {\twelvett Typewritter} \cr
-    \vbox{\openup-8pt\halign{#&\quad#&\quad#\cr 
-                      & {\tentt Upright}  & {\tenttit Italic} \cr
-      {\tentt Medium} & "\tentt"   & "\tenttit"        \cr
-      {\tenttbf Bold} & "\tenttbf" & "\tenttbfit"      \cr}} \cr}}$$
+$$\begingroup\let\tentt\seventt%
+  \vbox{\openup-1pt\halign{#\hfil&\ \ #\hfil&\ \ #\hfil\cr 
+    \green{\sevenrm(Serif)} & {\sevenrm Upright} & {\sevenit Italic} \cr
+    {\sevenrm Medium}& "\tenrm"    & "\tenit"     \cr
+    {\sevenbf Bold}  & "\tenbf"    & "\tenbfit"   \cr}}\ \vrule\ \ 
+  \vbox{\openup-1pt\halign{#\hfil&\ \ #\hfil&\ \ #\hfil\cr 
+    \green{\sevensf(Sans)}  & {\sevensf Upright}  & {\sevensfit Italic} \cr
+    {\sevensf Medium} & "\tensf"   & "\tensfit"   \cr
+    {\sevensfbf Bold} & "\tensfbf" & "\tensfbfit" \cr}}\ \vrule\ \ 
+  \vbox{\openup-1pt\halign{#\hfil&\ \ #\hfil&\ \ #\hfil\cr 
+    \green{\seventt(Mono)}  & {\seventt Upright}  & {\seventtit Italic} \cr
+    {\seventt Medium} & "\tentt"   & "\tenttit"   \cr
+    {\seventtbf Bold} & "\tenttbf" & "\tenttbfit" \cr}}
+\endgroup$$
 The font commands can be used as those provided in "plain.tex", for example,
 "{\tenbfit ABC}" yields {\tenbfit ABC}.
 
@@ -218,8 +225,13 @@ texdoc unimath-symbols
 in Terminal.
 
 You can also input Unicode math characters in your document's source file. 
-For example, "$∫_a^b y\,dx$" yields $∫_a^b y\,dx$ and "$$∫_a^b y\,dx.$$" yields 
-$$∫_a^b y\,dx.$$
+For example, 
+$$\vbox{\openup3pt\halign{#\hfil&\qquad#\hfil\cr
+{\tenit Input}&{\tenit yields}\cr
+"$∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$" & 
+  $∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$\cr
+"$$∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$$" & 
+  $\displaystyle ∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$\cr}}$$
 
 
 
@@ -228,7 +240,7 @@ The package changed ``"'"'' command in math mode, which yields prime(s)
 in superscript. After loading this package, the primes produced by ``"'"'' 
 will be turned into Unicode primes:
 $$\vbox{\openup2pt\halign{#\hfil\quad&\quad#\hfil\quad&\quad#\hfil\cr
-{\it Input} & {yields} & {\it Unicode slot}\cr
+{\tenit Input} & {\tenit yields} & {\tenit Unicode slot}\cr
 "$'$"     & $^{\hbox{\sevenlmmath\charhex2032}}$ & U+2032 \cr
 "$''$"    & $^{\hbox{\sevenlmmath\charhex2033}}$ & U+2033 \cr
 "$'''$"   & $^{\hbox{\sevenlmmath\charhex2034}}$ & U+2034 \cr
