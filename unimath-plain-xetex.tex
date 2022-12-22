@@ -8,10 +8,18 @@
 %% ******************************************************
 \catcode`\@=11
 
-\newdimen\@tempdima
-\newdimen\@tempdimb
-\newdimen\@tempdimc
-\newdimen\@tempdimd
+\ifcsname XeTeXversion\endcsname
+  \ifdefined\textfontopt\else\def\textfontopt{mapping=tex-text}\fi
+\else
+  \errmessage{unimath-plain-xetex Error: Needs XeTeX!}
+\fi
+% Here we change the definition of \newfam. XeTeX allows 255 fams at most.
+\outer\def\newfam{\alloc@8\fam\chardef\@cclv}
+
+\newdimen\um@tempdima
+\newdimen\um@tempdimb
+\newdimen\um@tempdimc
+\newdimen\um@tempdimd
 
 % text font
 \ifdefined\mainfontname\else
@@ -22,11 +30,6 @@
 \fi
 \ifdefined\monofontname\else
   \gdef\monofontname{Latin Modern Mono}
-\fi
-\ifcsname XeTeXversion\endcsname
-  \ifdefined\textfontopt\else\def\textfontopt{mapping=tex-text}\fi
-\else
-  \errmessage{unimath-plain-xetex Error: Needs XeTeX!}
 \fi
 
 \font\tenrm     =  "\mainfontname/R:\textfontopt" at 10pt
@@ -39,16 +42,16 @@
 
 \font\tensf@test = "\sansfontname/R:\textfontopt" at 10pt
 \font\tentt@test = "\monofontname/R:\textfontopt" at 10pt
-\@tempdima\fontdimen5\tenrm
-\@tempdimb\fontdimen5\tensf@test
-\gdef\sf@innerratio{\numexpr\dimexpr256\@tempdima/\@tempdimb\relax}
-\@tempdimc\fontdimen5\tentt@test
-\gdef\tt@innerratio{\numexpr\dimexpr256\@tempdima/\@tempdimc\relax}
+\um@tempdima\fontdimen5\tenrm
+\um@tempdimb\fontdimen5\tensf@test
+\gdef\sf@innerratio{\numexpr\dimexpr256\um@tempdima/\um@tempdimb\relax}
+\um@tempdimc\fontdimen5\tentt@test
+\gdef\tt@innerratio{\numexpr\dimexpr256\um@tempdima/\um@tempdimc\relax}
 \let\tensf@test\relax \let\tentt@test\relax
 
-\def\@sizeat#1{\@tempdimd#1\relax
-  \sf@size=\dimexpr\sf@innerratio\@tempdimd/256\relax
-  \tt@size=\dimexpr\tt@innerratio\@tempdimd/256\relax
+\def\@sizeat#1{\um@tempdimd#1\relax
+  \sf@size=\dimexpr\sf@innerratio\um@tempdimd/256\relax
+  \tt@size=\dimexpr\tt@innerratio\um@tempdimd/256\relax
 }
 \@sizeat{10pt}
 \font\tensf     =  "\sansfontname/R:\textfontopt" at \sf@size
@@ -120,14 +123,18 @@
 
 % math alpha, using OpenType Math font
 \ifdefined\mathalphafontname
-  \chardef\alphafam = 1 % `math alphabet' or `variable class'
+  \chardef\normalfam = 1 % `math alphabet' or `variable class'
   \font   \tenalpha = "\mathalphafontname:script=math" at 10pt
   \font \sevenalpha = "\mathalphafontname:script=math,+ssty=0" at 7pt
   \font  \fivealpha = "\mathalphafontname:script=math,+ssty=1" at 5pt
-  \textfont         \alphafam   =   \tenalpha
-  \scriptfont       \alphafam   = \sevenalpha
-  \scriptscriptfont \alphafam   =  \fivealpha
-\else \let\alphafam=\unimathfam \fi
+  \textfont         \normalfam   =   \tenalpha
+  \scriptfont       \normalfam   = \sevenalpha
+  \scriptscriptfont \normalfam   =  \fivealpha
+\else \let\normalfam=\unimathfam 
+  \let\tenalpha=\tenmath
+  \let\sevenalpha=\sevenmath
+  \let\fivealpha=\fivemath
+\fi
 % delimiter, influencing \mathopen, \mathclose, \mathfence, \mathover(under)
 \ifdefined\mathdelimiterfontname
   \chardef\delimiterfam = 2
@@ -158,7 +165,7 @@
   \scriptfont       \opfam   = \sevenop
   \scriptscriptfont \opfam   =  \fiveop
 \else \let\opfam=\unimathfam \fi
-% binary, nfluencing \mathbin and \mathrel
+% binary, influencing \mathbin and \mathrel
 \ifdefined\mathbinfontname
   \chardef\binfam = 5
   \font   \tenbin = "\mathbinfontname:script=math" at 10pt
@@ -187,6 +194,10 @@
 %\chardef\frakfam=15
 % In the short future, this package will support user-defined fams.
 
+\ifdefined\unimathsettings
+  \unimathsettings
+\fi
+
 % loading unicode-math-table
 \def\mathalpha{A}
 \def\mathfence{F}
@@ -211,8 +222,8 @@
     \Umathchardef #2 = 0 \ordfam #1 
     \Umathcode    #1 = 0 \ordfam #1 
   \else\ifx#3\mathalpha
-    \Umathchardef #2 = 0 \alphafam #1 
-    \Umathcode    #1 = 0 \alphafam #1
+    \Umathchardef #2 = 0 \normalfam #1 
+    \Umathcode    #1 = 0 \normalfam #1 
   \else\ifx#3\mathop
     \Umathchardef #2 = 1 \opfam #1 
     \Umathcode    #1 = 1 \opfam #1 
@@ -303,130 +314,142 @@
 %\Umathcode `\{ = 4 \delimiterfam `\{
 %\Umathcode `\} = 5 \delimiterfam `\}
 
-\Umathcode `\0 = 0 \alphafam "30
-\Umathcode `\1 = 0 \alphafam "31
-\Umathcode `\2 = 0 \alphafam "32
-\Umathcode `\3 = 0 \alphafam "33
-\Umathcode `\4 = 0 \alphafam "34
-\Umathcode `\5 = 0 \alphafam "35
-\Umathcode `\6 = 0 \alphafam "36
-\Umathcode `\7 = 0 \alphafam "37
-\Umathcode `\8 = 0 \alphafam "38
-\Umathcode `\9 = 0 \alphafam "39
-\Umathcode `\A = 0 \alphafam "1D434
-\Umathcode `\B = 0 \alphafam "1D435
-\Umathcode `\C = 0 \alphafam "1D436
-\Umathcode `\D = 0 \alphafam "1D437
-\Umathcode `\E = 0 \alphafam "1D438
-\Umathcode `\F = 0 \alphafam "1D439
-\Umathcode `\G = 0 \alphafam "1D43A
-\Umathcode `\H = 0 \alphafam "1D43B
-\Umathcode `\I = 0 \alphafam "1D43C
-\Umathcode `\J = 0 \alphafam "1D43D
-\Umathcode `\K = 0 \alphafam "1D43E
-\Umathcode `\L = 0 \alphafam "1D43F
-\Umathcode `\M = 0 \alphafam "1D440
-\Umathcode `\N = 0 \alphafam "1D441
-\Umathcode `\O = 0 \alphafam "1D442
-\Umathcode `\P = 0 \alphafam "1D443
-\Umathcode `\Q = 0 \alphafam "1D444
-\Umathcode `\R = 0 \alphafam "1D445
-\Umathcode `\S = 0 \alphafam "1D446
-\Umathcode `\T = 0 \alphafam "1D447
-\Umathcode `\U = 0 \alphafam "1D448
-\Umathcode `\V = 0 \alphafam "1D449
-\Umathcode `\W = 0 \alphafam "1D44A
-\Umathcode `\X = 0 \alphafam "1D44B
-\Umathcode `\Y = 0 \alphafam "1D44C
-\Umathcode `\Z = 0 \alphafam "1D44D
-\Umathcode `\a = 0 \alphafam "1D44E
-\Umathcode `\b = 0 \alphafam "1D44F
-\Umathcode `\c = 0 \alphafam "1D450
-\Umathcode `\d = 0 \alphafam "1D451
-\Umathcode `\e = 0 \alphafam "1D452
-\Umathcode `\f = 0 \alphafam "1D453
-\Umathcode `\g = 0 \alphafam "1D454
-\Umathcode `\h = 0 \alphafam "0210E % Planck constant
-\Umathcode `\i = 0 \alphafam "1D456
-\Umathcode `\j = 0 \alphafam "1D457
-\Umathcode `\k = 0 \alphafam "1D458
-\Umathcode `\l = 0 \alphafam "1D459
-\Umathcode `\m = 0 \alphafam "1D45A
-\Umathcode `\n = 0 \alphafam "1D45B
-\Umathcode `\o = 0 \alphafam "1D45C
-\Umathcode `\p = 0 \alphafam "1D45D
-\Umathcode `\q = 0 \alphafam "1D45E
-\Umathcode `\r = 0 \alphafam "1D45F
-\Umathcode `\s = 0 \alphafam "1D460
-\Umathcode `\t = 0 \alphafam "1D461
-\Umathcode `\u = 0 \alphafam "1D462
-\Umathcode `\v = 0 \alphafam "1D463
-\Umathcode `\w = 0 \alphafam "1D464
-\Umathcode `\x = 0 \alphafam "1D465
-\Umathcode `\y = 0 \alphafam "1D466
-\Umathcode `\z = 0 \alphafam "1D467
-\Umathcode `\Α = 0 \alphafam "1D6E2
-\Umathcode `\Β = 0 \alphafam "1D6E3
-\Umathcode `\Γ = 0 \alphafam "1D6E4
-\Umathcode `\Δ = 0 \alphafam "1D6E5
-\Umathcode `\Ε = 0 \alphafam "1D6E6
-\Umathcode `\Ζ = 0 \alphafam "1D6E7
-\Umathcode `\Η = 0 \alphafam "1D6E8
-\Umathcode `\Θ = 0 \alphafam "1D6E9
-\Umathcode `\Ι = 0 \alphafam "1D6EA
-\Umathcode `\Κ = 0 \alphafam "1D6EB
-\Umathcode `\Λ = 0 \alphafam "1D6EC
-\Umathcode `\Μ = 0 \alphafam "1D6ED
-\Umathcode `\Ν = 0 \alphafam "1D6EE
-\Umathcode `\Ξ = 0 \alphafam "1D6EF
-\Umathcode `\Ο = 0 \alphafam "1D6F0
-\Umathcode `\Π = 0 \alphafam "1D6F1
-\Umathcode `\Ρ = 0 \alphafam "1D6F2
-\Umathcode `\Σ = 0 \alphafam "1D6F4
-\Umathcode `\Τ = 0 \alphafam "1D6F5
-\Umathcode `\Υ = 0 \alphafam "1D6F6
-\Umathcode `\Φ = 0 \alphafam "1D6F7
-\Umathcode `\Χ = 0 \alphafam "1D6F8
-\Umathcode `\Ψ = 0 \alphafam "1D6F9
-\Umathcode `\Ω = 0 \alphafam "1D6FA
-\Umathcode `\α = 0 \alphafam "1D6FC
-\Umathcode `\β = 0 \alphafam "1D6FD
-\Umathcode `\γ = 0 \alphafam "1D6FE
-\Umathcode `\δ = 0 \alphafam "1D6FF
-\Umathcode `\ε = 0 \alphafam "1D700
-\Umathcode `\ζ = 0 \alphafam "1D701
-\Umathcode `\η = 0 \alphafam "1D702
-\Umathcode `\θ = 0 \alphafam "1D703
-\Umathcode `\ι = 0 \alphafam "1D704
-\Umathcode `\κ = 0 \alphafam "1D705
-\Umathcode `\λ = 0 \alphafam "1D706
-\Umathcode `\μ = 0 \alphafam "1D707
-\Umathcode `\ν = 0 \alphafam "1D708
-\Umathcode `\ξ = 0 \alphafam "1D709
-\Umathcode `\ο = 0 \alphafam "1D70A
-\Umathcode `\π = 0 \alphafam "1D70B
-\Umathcode `\ρ = 0 \alphafam "1D70C
-\Umathcode `\ς = 0 \alphafam "1D70D
-\Umathcode `\σ = 0 \alphafam "1D70E
-\Umathcode `\τ = 0 \alphafam "1D70F
-\Umathcode `\υ = 0 \alphafam "1D710
-\Umathcode `\φ = 0 \alphafam "1D719
-\Umathcode `\χ = 0 \alphafam "1D712
-\Umathcode `\ψ = 0 \alphafam "1D713
-\Umathcode `\ω = 0 \alphafam "1D714
-\Umathcode `\ϑ = 0 \alphafam "1D717
-\Umathcode `\ϕ = 0 \alphafam "1D711
-\Umathcode `\ϖ = 0 \alphafam "1D71B
-\Umathcode `\ϰ = 0 \alphafam "1D718
-\Umathcode `\ϱ = 0 \alphafam "1D71A
-\Umathcode `\ϴ = 0 \alphafam "1D6F3
-\Umathcode `\ϵ = 0 \alphafam "1D716
+\Umathcode `\0 = 0 \normalfam "30
+\Umathcode `\1 = 0 \normalfam "31
+\Umathcode `\2 = 0 \normalfam "32
+\Umathcode `\3 = 0 \normalfam "33
+\Umathcode `\4 = 0 \normalfam "34
+\Umathcode `\5 = 0 \normalfam "35
+\Umathcode `\6 = 0 \normalfam "36
+\Umathcode `\7 = 0 \normalfam "37
+\Umathcode `\8 = 0 \normalfam "38
+\Umathcode `\9 = 0 \normalfam "39
+\Umathcode `\A = 0 \normalfam "1D434
+\Umathcode `\B = 0 \normalfam "1D435
+\Umathcode `\C = 0 \normalfam "1D436
+\Umathcode `\D = 0 \normalfam "1D437
+\Umathcode `\E = 0 \normalfam "1D438
+\Umathcode `\F = 0 \normalfam "1D439
+\Umathcode `\G = 0 \normalfam "1D43A
+\Umathcode `\H = 0 \normalfam "1D43B
+\Umathcode `\I = 0 \normalfam "1D43C
+\Umathcode `\J = 0 \normalfam "1D43D
+\Umathcode `\K = 0 \normalfam "1D43E
+\Umathcode `\L = 0 \normalfam "1D43F
+\Umathcode `\M = 0 \normalfam "1D440
+\Umathcode `\N = 0 \normalfam "1D441
+\Umathcode `\O = 0 \normalfam "1D442
+\Umathcode `\P = 0 \normalfam "1D443
+\Umathcode `\Q = 0 \normalfam "1D444
+\Umathcode `\R = 0 \normalfam "1D445
+\Umathcode `\S = 0 \normalfam "1D446
+\Umathcode `\T = 0 \normalfam "1D447
+\Umathcode `\U = 0 \normalfam "1D448
+\Umathcode `\V = 0 \normalfam "1D449
+\Umathcode `\W = 0 \normalfam "1D44A
+\Umathcode `\X = 0 \normalfam "1D44B
+\Umathcode `\Y = 0 \normalfam "1D44C
+\Umathcode `\Z = 0 \normalfam "1D44D
+\Umathcode `\a = 0 \normalfam "1D44E
+\Umathcode `\b = 0 \normalfam "1D44F
+\Umathcode `\c = 0 \normalfam "1D450
+\Umathcode `\d = 0 \normalfam "1D451
+\Umathcode `\e = 0 \normalfam "1D452
+\Umathcode `\f = 0 \normalfam "1D453
+\Umathcode `\g = 0 \normalfam "1D454
+\Umathcode `\h = 0 \normalfam "0210E % Planck constant
+\Umathcode `\i = 0 \normalfam "1D456
+\Umathcode `\j = 0 \normalfam "1D457
+\Umathcode `\k = 0 \normalfam "1D458
+\Umathcode `\l = 0 \normalfam "1D459
+\Umathcode `\m = 0 \normalfam "1D45A
+\Umathcode `\n = 0 \normalfam "1D45B
+\Umathcode `\o = 0 \normalfam "1D45C
+\Umathcode `\p = 0 \normalfam "1D45D
+\Umathcode `\q = 0 \normalfam "1D45E
+\Umathcode `\r = 0 \normalfam "1D45F
+\Umathcode `\s = 0 \normalfam "1D460
+\Umathcode `\t = 0 \normalfam "1D461
+\Umathcode `\u = 0 \normalfam "1D462
+\Umathcode `\v = 0 \normalfam "1D463
+\Umathcode `\w = 0 \normalfam "1D464
+\Umathcode `\x = 0 \normalfam "1D465
+\Umathcode `\y = 0 \normalfam "1D466
+\Umathcode `\z = 0 \normalfam "1D467
+\Umathcode `\Α = 0 \normalfam "1D6E2
+\Umathcode `\Β = 0 \normalfam "1D6E3
+\Umathcode `\Γ = 0 \normalfam "1D6E4
+\Umathcode `\Δ = 0 \normalfam "1D6E5
+\Umathcode `\Ε = 0 \normalfam "1D6E6
+\Umathcode `\Ζ = 0 \normalfam "1D6E7
+\Umathcode `\Η = 0 \normalfam "1D6E8
+\Umathcode `\Θ = 0 \normalfam "1D6E9
+\Umathcode `\Ι = 0 \normalfam "1D6EA
+\Umathcode `\Κ = 0 \normalfam "1D6EB
+\Umathcode `\Λ = 0 \normalfam "1D6EC
+\Umathcode `\Μ = 0 \normalfam "1D6ED
+\Umathcode `\Ν = 0 \normalfam "1D6EE
+\Umathcode `\Ξ = 0 \normalfam "1D6EF
+\Umathcode `\Ο = 0 \normalfam "1D6F0
+\Umathcode `\Π = 0 \normalfam "1D6F1
+\Umathcode `\Ρ = 0 \normalfam "1D6F2
+\Umathcode `\Σ = 0 \normalfam "1D6F4
+\Umathcode `\Τ = 0 \normalfam "1D6F5
+\Umathcode `\Υ = 0 \normalfam "1D6F6
+\Umathcode `\Φ = 0 \normalfam "1D6F7
+\Umathcode `\Χ = 0 \normalfam "1D6F8
+\Umathcode `\Ψ = 0 \normalfam "1D6F9
+\Umathcode `\Ω = 0 \normalfam "1D6FA
+\Umathcode `\α = 0 \normalfam "1D6FC
+\Umathcode `\β = 0 \normalfam "1D6FD
+\Umathcode `\γ = 0 \normalfam "1D6FE
+\Umathcode `\δ = 0 \normalfam "1D6FF
+\Umathcode `\ε = 0 \normalfam "1D700
+\Umathcode `\ζ = 0 \normalfam "1D701
+\Umathcode `\η = 0 \normalfam "1D702
+\Umathcode `\θ = 0 \normalfam "1D703
+\Umathcode `\ι = 0 \normalfam "1D704
+\Umathcode `\κ = 0 \normalfam "1D705
+\Umathcode `\λ = 0 \normalfam "1D706
+\Umathcode `\μ = 0 \normalfam "1D707
+\Umathcode `\ν = 0 \normalfam "1D708
+\Umathcode `\ξ = 0 \normalfam "1D709
+\Umathcode `\ο = 0 \normalfam "1D70A
+\Umathcode `\π = 0 \normalfam "1D70B
+\Umathcode `\ρ = 0 \normalfam "1D70C
+\Umathcode `\ς = 0 \normalfam "1D70D
+\Umathcode `\σ = 0 \normalfam "1D70E
+\Umathcode `\τ = 0 \normalfam "1D70F
+\Umathcode `\υ = 0 \normalfam "1D710
+\Umathcode `\φ = 0 \normalfam "1D719
+\Umathcode `\χ = 0 \normalfam "1D712
+\Umathcode `\ψ = 0 \normalfam "1D713
+\Umathcode `\ω = 0 \normalfam "1D714
+\Umathcode `\ϑ = 0 \normalfam "1D717
+\Umathcode `\ϕ = 0 \normalfam "1D711
+\Umathcode `\ϖ = 0 \normalfam "1D71B
+\Umathcode `\ϰ = 0 \normalfam "1D718
+\Umathcode `\ϱ = 0 \normalfam "1D71A
+\Umathcode `\ϴ = 0 \normalfam "1D6F3
+\Umathcode `\ϵ = 0 \normalfam "1D716
 % Some rarely-used Greek letters
-\Umathcode `\Ϝ = 0 \alphafam "003DC
-\Umathcode `\ϝ = 0 \alphafam "003DD
-\Umathcode `\϶ = 0 \alphafam "003F6
+\Umathcode `\Ϝ = 0 \normalfam "003DC
+\Umathcode `\ϝ = 0 \normalfam "003DD
+\Umathcode `\϶ = 0 \normalfam "003F6
 
-\input unimath-plain-alphafams
+\input unimath-plain-alphabet
+\let\itbf=\bfit
+\let\itsf=\sfit
+\let\bfsf=\sfbf
+\let\sfitbf=\sfbfit
+\let\bfsfit=\sfbfit
+\let\bfitsf=\sfbfit
+\let\itsfbf=\sfbfit
+\let\itbfsf=\sfbfit
+\let\cal=\scr
+\let\bfscr=\scrbf
+\let\bffrak=\frakbf
+\let\itbb=\bbit
 
 % Greek letter command
 \let\Alpha=Α      \let\Beta=Β     \let\Gamma=Γ    \let\Delta=Δ
@@ -443,6 +466,8 @@
 \let\upsilon=υ    \let\phi=φ      \let\chi=χ      \let\psi=ψ
 \let\omega=ω      \let\vartheta=ϑ \let\varphi=ϕ   \let\varpi=ϖ
 \let\varkappa=ϰ   \let\varrho=ϱ   \let\varTheta=ϴ \let\epsilon=ϵ
+% \partial and \nabla
+\let\partial=∂    \let\nabla=∇
 
 % math commands
 \protected\def\{{\ifmmode\lbrace\else\char`\{\fi} % plain.tex: \let\{=\lbrace

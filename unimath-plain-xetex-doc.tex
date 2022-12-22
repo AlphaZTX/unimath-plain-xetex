@@ -32,7 +32,7 @@
 \def\ttverbatim{\begingroup
   \catcode`\\=12 \catcode`\{=12 \catcode`\}=12 \catcode`\$=12
   \catcode`\&=12 \catcode`\#=12 \catcode`\%=12 \catcode`\~=12
-  \catcode`\_=12 \catcode`\^=12 \obeyspaces \obeylines \tentt}
+  \catcode`\_=12 \catcode`\^=12 \catcode`\ =12 \obeylines \tentt}
 \outer\def\begintt{$$\let\par=\endgraf \ttverbatim \parskip=0pt
   \catcode`\|=0 \rightskip-2pc \ttfinish}
 {\catcode`\|=0 |catcode`|\=12 % | is temporary escape character
@@ -107,7 +107,7 @@
 \centerline{Zhang Tingxuan}
 \medskip
 
-\centerline{2022/11/26\quad Version 0.1}
+\centerline{2022/12/23\quad Version 0.1a}
 \biggskip
 
 \begingroup\parskip0pt
@@ -211,7 +211,7 @@ You can input math formulae just like using traditional plain \tex. But
 OpenType math font is loaded. For example, "$a{\bf0}={\bf0}$" yields 
 $a{\bf0}={\bf0}$. Available math font commands are listed below:
 \begintt
-\rm, \bf, \it, \bfit,\sf, \sfbf, \sfit, \sfbfit,
+\rm, \bf, \it, \bfit, \sf, \sfbf, \sfit, \sfbfit,
 \tt, \cal, \calbf, \bb, \bbit, \frak, \frakbf
 \endtt
 The \<family>-\<series>-\<shape> order of these commands allows being random; 
@@ -229,9 +229,9 @@ You can also input Unicode math characters in your document's source file.
 For example, 
 $$\vbox{\openup3pt\halign{#\hfil&\qquad#\hfil\cr
 {\tenit Input}&{\tenit yields}\cr
-"$∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$" & 
+"$ ∑_{i=0}^∞ ∫_a^b ρ_i \, {\rm d} τ' $" & 
   $∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$\cr
-"$$∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$$" & 
+"$$∑_{i=0}^∞ ∫_a^b ρ_i \, {\rm d} τ'$$" & 
   $\displaystyle ∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$\cr}}$$
 
 
