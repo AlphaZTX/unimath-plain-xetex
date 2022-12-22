@@ -1,4 +1,4 @@
--- Run this Lua script to generate "unimath-plain-xetex-mathalpha.tex".
+-- Run this Lua script to generate "unimath-plain-xetex-alphabet.tex".
 -- This script needs kpathsea library which is provided by LuaTeX.
 -- You can "luatex" a file including 
 --     \directlua{dofile("unimath-plain-genalphabet.lua")}
