@@ -7,7 +7,6 @@
 %% * version.                                           *
 %% ******************************************************
 \catcode`\@=11
-
 \ifcsname XeTeXversion\endcsname
   \ifdefined\textfontopt\else\def\textfontopt{mapping=tex-text}\fi
 \else
@@ -21,7 +20,7 @@
 \newdimen\um@tempdimc
 \newdimen\um@tempdimd
 
-% text font
+% text font and font sizes
 \ifdefined\mainfontname\else
   \gdef\mainfontname{Latin Modern Roman}
 \fi
@@ -121,23 +120,9 @@
 \scriptfont       \unimathfam = \sevenmath
 \scriptscriptfont \unimathfam =  \fivemath
 
-% math alpha, using OpenType Math font
-\ifdefined\mathalphafontname
-  \chardef\normalfam = 1 % `math alphabet' or `variable class'
-  \font   \tenalpha = "\mathalphafontname:script=math" at 10pt
-  \font \sevenalpha = "\mathalphafontname:script=math,+ssty=0" at 7pt
-  \font  \fivealpha = "\mathalphafontname:script=math,+ssty=1" at 5pt
-  \textfont         \normalfam   =   \tenalpha
-  \scriptfont       \normalfam   = \sevenalpha
-  \scriptscriptfont \normalfam   =  \fivealpha
-\else \let\normalfam=\unimathfam 
-  \let\tenalpha=\tenmath
-  \let\sevenalpha=\sevenmath
-  \let\fivealpha=\fivemath
-\fi
 % delimiter, influencing \mathopen, \mathclose, \mathfence, \mathover(under)
 \ifdefined\mathdelimiterfontname
-  \chardef\delimiterfam = 2
+  \chardef\delimiterfam = 1
   \font   \tendelimiter = "\mathdelimiterfontname:script=math" at 10pt
   \font \sevendelimiter = "\mathdelimiterfontname:script=math,+ssty=0" at 7pt
   \font  \fivedelimiter = "\mathdelimiterfontname:script=math,+ssty=1" at 5pt
@@ -147,7 +132,7 @@
 \else \let\delimiterfam=\unimathfam \fi
 % ordinary, influencing \mathord, \mathpunct and `!'
 \ifdefined\mathordfontname
-  \chardef\ordfam = 3
+  \chardef\ordfam = 2
   \font   \tenord = "\mathordfontname:script=math" at 10pt
   \font \sevenord = "\mathordfontname:script=math,+ssty=0" at 7pt
   \font  \fiveord = "\mathordfontname:script=math,+ssty=1" at 5pt
@@ -157,7 +142,7 @@
 \else \let\ordfam=\unimathfam \fi
 % large operator, influencing \mathop
 \ifdefined\mathopfontname
-  \chardef\opfam = 4
+  \chardef\opfam = 3
   \font   \tenop = "\mathopfontname:script=math" at 10pt
   \font \sevenop = "\mathopfontname:script=math,+ssty=0" at 7pt
   \font  \fiveop = "\mathopfontname:script=math,+ssty=1" at 5pt
@@ -167,7 +152,7 @@
 \else \let\opfam=\unimathfam \fi
 % binary, influencing \mathbin and \mathrel
 \ifdefined\mathbinfontname
-  \chardef\binfam = 5
+  \chardef\binfam = 4
   \font   \tenbin = "\mathbinfontname:script=math" at 10pt
   \font \sevenbin = "\mathbinfontname:script=math,+ssty=0" at 7pt
   \font  \fivebin = "\mathbinfontname:script=math,+ssty=1" at 5pt
@@ -177,7 +162,7 @@
 \else \let\binfam=\unimathfam \fi
 % accent, influencing all the accents except \mathover(close)
 \ifdefined\mathaccentfontname
-  \chardef\accentfam = 6
+  \chardef\accentfam = 5
   \font   \tenaccent = "\mathaccentfontname:script=math" at 10pt
   \font \sevenaccent = "\mathaccentfontname:script=math,+ssty=0" at 7pt
   \font  \fiveaccent = "\mathaccentfontname:script=math,+ssty=1" at 5pt
@@ -185,15 +170,217 @@
   \scriptfont       \accentfam   = \sevenaccent
   \scriptscriptfont \accentfam   =  \fiveaccent
 \else \let\accentfam=\unimathfam \fi
-% These will be the features in the `long' future:
-%\chardef\romanfam=10
-%\chardef\sansfam=11
-%\chardef\ttfam=12
-%\chardef\calfam=13
-%\chardef\bbfam=14
-%\chardef\frakfam=15
-% In the short future, this package will support user-defined fams.
-
+%
+% ---------------------------------------------------------------------- %
+%
+% math alphabet, using OpenType Math font
+\ifdefined\mathalphafontname\else\let\mathalphafontname\mathfontname\fi
+% \mrm, uses math font
+\newfam\mrmfam
+\font  \tenmrm = "\mathalphafontname:script=math" at 10pt
+\font\sevenmrm = "\mathalphafontname:script=math,+ssty=0" at 7pt
+\font \fivemrm = "\mathalphafontname:script=math,+ssty=1" at 5pt
+\textfont         \mrmfam =   \tenmrm
+\scriptfont       \mrmfam = \sevenmrm
+\scriptscriptfont \mrmfam =  \fivemrm
+\def\mrm{\fam\mrmfam}
+% \rm, uses text font
+\newfam\textrmfam
+\textfont         \textrmfam =   \tenrm
+\scriptfont       \textrmfam = \sevenrm
+\scriptscriptfont \textrmfam =  \fiverm
+\def\rm{\fam\textrmfam\tenrm}
+% \mit, redefined
+\newfam\mitfam
+\font  \tenmit = "\mathalphafontname:script=math,mapping=unimath-it" at 10pt
+\font\sevenmit = "\mathalphafontname:script=math,mapping=unimath-it,+ssty=0" at 7pt
+\font \fivemit = "\mathalphafontname:script=math,mapping=unimath-it,+ssty=1" at 5pt
+\textfont         \mitfam =   \tenmit
+\scriptfont       \mitfam = \sevenmit
+\scriptscriptfont \mitfam =  \fivemit
+\def\mit{\fam\mitfam}
+% \it
+\newfam\textitfam
+\textfont         \textitfam =   \tenit
+\scriptfont       \textitfam = \sevenit
+\scriptscriptfont \textitfam =  \fiveit
+\def\it{\fam\textitfam\tenit}
+% \mbf
+\newfam\mbffam
+\font  \tenmbf = "\mathalphafontname:script=math,mapping=unimath-bf" at 10pt
+\font\sevenmbf = "\mathalphafontname:script=math,mapping=unimath-bf,+ssty=0" at 7pt
+\font \fivembf = "\mathalphafontname:script=math,mapping=unimath-bf,+ssty=1" at 5pt
+\textfont         \mbffam =   \tenmbf
+\scriptfont       \mbffam = \sevenmbf
+\scriptscriptfont \mbffam =  \fivembf
+\def\mbf{\fam\mbffam}
+% \bf
+\newfam\textbffam
+\textfont         \textbffam =   \tenbf
+\scriptfont       \textbffam = \sevenbf
+\scriptscriptfont \textbffam =  \fivebf
+\def\bf{\fam\textbffam\tenbf}
+% \msf
+\newfam\msffam
+\font  \tenmsf = "\mathalphafontname:script=math,mapping=unimath-sf" at 10pt
+\font\sevenmsf = "\mathalphafontname:script=math,mapping=unimath-sf,+ssty=0" at 7pt
+\font \fivemsf = "\mathalphafontname:script=math,mapping=unimath-sf,+ssty=1" at 5pt
+\textfont         \msffam =   \tenmsf
+\scriptfont       \msffam = \sevenmsf
+\scriptscriptfont \msffam =  \fivemsf
+\def\msf{\fam\msffam}
+% \sf
+\newfam\textsffam
+\textfont         \textsffam =   \tensf
+\scriptfont       \textsffam = \sevensf
+\scriptscriptfont \textsffam =  \fivesf
+\def\sf{\fam\textsffam\tensf}
+% \mtt
+\newfam\mttfam
+\font  \tenmtt = "\mathalphafontname:script=math,mapping=unimath-tt" at 10pt
+\font\sevenmtt = "\mathalphafontname:script=math,mapping=unimath-tt,+ssty=0" at 7pt
+\font \fivemtt = "\mathalphafontname:script=math,mapping=unimath-tt,+ssty=1" at 5pt
+\textfont         \mttfam =   \tenmtt
+\scriptfont       \mttfam = \sevenmtt
+\scriptscriptfont \mttfam =  \fivemtt
+\def\mtt{\fam\mttfam}
+% \tt
+\newfam\textttfam
+\textfont         \textttfam =   \tentt
+\scriptfont       \textttfam = \seventt
+\scriptscriptfont \textttfam =  \fivett
+\def\tt{\fam\textttfam\tentt}
+% \mbfit
+\newfam\mbfitfam
+\font  \tenmbfit = "\mathalphafontname:script=math,mapping=unimath-bfit" at 10pt
+\font\sevenmbfit = "\mathalphafontname:script=math,mapping=unimath-bfit,+ssty=0" at 7pt
+\font \fivembfit = "\mathalphafontname:script=math,mapping=unimath-bfit,+ssty=1" at 5pt
+\textfont         \mbfitfam =   \tenmbfit
+\scriptfont       \mbfitfam = \sevenmbfit
+\scriptscriptfont \mbfitfam =  \fivembfit
+\def\mbfit{\fam\mbfitfam}
+% \bfit
+\newfam\textbfitfam
+\textfont         \textbfitfam =   \tenbfit
+\scriptfont       \textbfitfam = \sevenbfit
+\scriptscriptfont \textbfitfam =  \fivebfit
+\def\bfit{\fam\textbfitfam\tenbfit}
+% \msfbf
+\newfam\msfbffam
+\font  \tenmsfbf = "\mathalphafontname:script=math,mapping=unimath-sfbf" at 10pt
+\font\sevenmsfbf = "\mathalphafontname:script=math,mapping=unimath-sfbf,+ssty=0" at 7pt
+\font \fivemsfbf = "\mathalphafontname:script=math,mapping=unimath-sfbf,+ssty=1" at 5pt
+\textfont         \msfbffam =   \tenmsfbf
+\scriptfont       \msfbffam = \sevenmsfbf
+\scriptscriptfont \msfbffam =  \fivemsfbf
+\def\msfbf{\fam\msfbffam}
+% \sfbf
+\newfam\textsfbffam
+\textfont         \textsfbffam =   \tensfbf
+\scriptfont       \textsfbffam = \sevensfbf
+\scriptscriptfont \textsfbffam =  \fivesfbf
+\def\sfbf{\fam\textsfbffam\tensfbf}
+% \msfit
+\newfam\msfitfam
+\font  \tenmsfit = "\mathalphafontname:script=math,mapping=unimath-sfit" at 10pt
+\font\sevenmsfit = "\mathalphafontname:script=math,mapping=unimath-sfit,+ssty=0" at 7pt
+\font \fivemsfit = "\mathalphafontname:script=math,mapping=unimath-sfit,+ssty=1" at 5pt
+\textfont         \msfitfam =   \tenmsfit
+\scriptfont       \msfitfam = \sevenmsfit
+\scriptscriptfont \msfitfam =  \fivemsfit
+\def\msfit{\fam\msfitfam}
+% \sfit
+\newfam\textsfitfam
+\textfont         \textsfitfam =   \tensfit
+\scriptfont       \textsfitfam = \sevensfit
+\scriptscriptfont \textsfitfam =  \fivesfit
+\def\sfit{\fam\textsfitfam\tensfit}
+% \msfbfit
+\newfam\msfbfitfam
+\font  \tenmsfbfit = "\mathalphafontname:script=math,mapping=unimath-sfbfit" at 10pt
+\font\sevenmsfbfit = "\mathalphafontname:script=math,mapping=unimath-sfbfit,+ssty=0" at 7pt
+\font \fivemsfbfit = "\mathalphafontname:script=math,mapping=unimath-sfbfit,+ssty=1" at 5pt
+\textfont         \msfbfitfam =   \tenmsfbfit
+\scriptfont       \msfbfitfam = \sevenmsfbfit
+\scriptscriptfont \msfbfitfam =  \fivemsfbfit
+\def\msfbfit{\fam\msfbfitfam}
+% \sfbfit
+\newfam\textsfbfitfam
+\textfont         \textsfbfitfam =   \tensfbfit
+\scriptfont       \textsfbfitfam = \sevensfbfit
+\scriptscriptfont \textsfbfitfam =  \fivesfbfit
+\def\sfbfit{\fam\textsfbfitfam\tensfbfit}
+% ----------------- math only ----------------- %
+% \scr
+\newfam\scrfam
+\font  \tenscr = "\mathalphafontname:script=math,mapping=unimath-scr" at 10pt
+\font\sevenscr = "\mathalphafontname:script=math,mapping=unimath-scr,+ssty=0" at 7pt
+\font \fivescr = "\mathalphafontname:script=math,mapping=unimath-scr,+ssty=1" at 5pt
+\textfont         \scrfam =   \tenscr
+\scriptfont       \scrfam = \sevenscr
+\scriptscriptfont \scrfam =  \fivescr
+\def\scr{\fam\scrfam}
+% \bb
+\newfam\bbfam
+\font  \tenbb = "\mathalphafontname:script=math,mapping=unimath-bb" at 10pt
+\font\sevenbb = "\mathalphafontname:script=math,mapping=unimath-bb,+ssty=0" at 7pt
+\font \fivebb = "\mathalphafontname:script=math,mapping=unimath-bb,+ssty=1" at 5pt
+\textfont         \bbfam =   \tenbb
+\scriptfont       \bbfam = \sevenbb
+\scriptscriptfont \bbfam =  \fivebb
+\def\bb{\fam\bbfam}
+% \frak
+\newfam\frakfam
+\font  \tenfrak = "\mathalphafontname:script=math,mapping=unimath-frak" at 10pt
+\font\sevenfrak = "\mathalphafontname:script=math,mapping=unimath-frak,+ssty=0" at 7pt
+\font \fivefrak = "\mathalphafontname:script=math,mapping=unimath-frak,+ssty=1" at 5pt
+\textfont         \frakfam =   \tenfrak
+\scriptfont       \frakfam = \sevenfrak
+\scriptscriptfont \frakfam =  \fivefrak
+\def\frak{\fam\frakfam}
+% \scrbf
+\newfam\scrbffam
+\font  \tenscrbf = "\mathalphafontname:script=math,mapping=unimath-scrbf" at 10pt
+\font\sevenscrbf = "\mathalphafontname:script=math,mapping=unimath-scrbf,+ssty=0" at 7pt
+\font \fivescrbf = "\mathalphafontname:script=math,mapping=unimath-scrbf,+ssty=1" at 5pt
+\textfont         \scrbffam =   \tenscrbf
+\scriptfont       \scrbffam = \sevenscrbf
+\scriptscriptfont \scrbffam =  \fivescrbf
+\def\scrbf{\fam\scrbffam}
+% \frakbf
+\newfam\frakbffam
+\font  \tenfrakbf = "\mathalphafontname:script=math,mapping=unimath-frakbf" at 10pt
+\font\sevenfrakbf = "\mathalphafontname:script=math,mapping=unimath-frakbf,+ssty=0" at 7pt
+\font \fivefrakbf = "\mathalphafontname:script=math,mapping=unimath-frakbf,+ssty=1" at 5pt
+\textfont         \frakbffam =   \tenfrakbf
+\scriptfont       \frakbffam = \sevenfrakbf
+\scriptscriptfont \frakbffam =  \fivefrakbf
+\def\frakbf{\fam\frakbffam}
+% \bbit
+\newfam\bbitfam
+\font  \tenbbit = "\mathalphafontname:script=math,mapping=unimath-bbit" at 10pt
+\font\sevenbbit = "\mathalphafontname:script=math,mapping=unimath-bbit,+ssty=0" at 7pt
+\font \fivebbit = "\mathalphafontname:script=math,mapping=unimath-bbit,+ssty=1" at 5pt
+\textfont         \bbitfam =   \tenbbit
+\scriptfont       \bbitfam = \sevenbbit
+\scriptscriptfont \bbitfam =  \fivebbit
+\def\bbit{\fam\bbitfam}
+% equivalent commands
+\let\mitbf=\mbfit     \let\mitsf=\msfit     \let\mbfsf=\msfbf
+\let\msfitbf=\msfbfit \let\mbfsfit=\msfbfit \let\mbfitsf=\msfbfit
+\let\mitsfbf=\msfbfit \let\mitbfsf=\msfbfit
+\let\itbf=\bfit       \let\itsf=\sfit       \let\bfsf=\sfbf
+\let\sfitbf=\sfbfit   \let\bfsfit=\sfbfit   \let\bfitsf=\sfbfit
+\let\itsfbf=\sfbfit   \let\itbfsf=\sfbfit
+\let\mscr=\scr        \let\mcal=\scr        \let\cal=\scr
+\let\calbf=\scrbf     \let\bfcal=\scrbf     \let\mcalbf=\scrbf
+\let\mbfcal=\scrbf    \let\mscrbf=\scrbf    \let\mbfscr=\scrbf
+\let\bfscr=\scrbf
+\let\bffrak=\frakbf   \let\mfrakbf=\frakbf  \let\mbffrak=\frakbf
+\let\itbb=\bbit       \let\mbbit=\bbit      \let\mitbb=\bbit
+%
+% ---------------------------------------------------------------------- %
+%
 \ifdefined\unimathsettings
   \unimathsettings
 \fi
@@ -222,8 +409,8 @@
     \Umathchardef #2 = 0 \ordfam #1 
     \Umathcode    #1 = 0 \ordfam #1 
   \else\ifx#3\mathalpha
-    \Umathchardef #2 = 0 \normalfam #1 
-    \Umathcode    #1 = 0 \normalfam #1 
+    \Umathchardef #2 = 0 \ordfam #1 
+    \Umathcode    #1 = 0 \ordfam #1 
   \else\ifx#3\mathop
     \Umathchardef #2 = 1 \opfam #1 
     \Umathcode    #1 = 1 \opfam #1 
@@ -314,142 +501,128 @@
 %\Umathcode `\{ = 4 \delimiterfam `\{
 %\Umathcode `\} = 5 \delimiterfam `\}
 
-\Umathcode `\0 = 0 \normalfam "30
-\Umathcode `\1 = 0 \normalfam "31
-\Umathcode `\2 = 0 \normalfam "32
-\Umathcode `\3 = 0 \normalfam "33
-\Umathcode `\4 = 0 \normalfam "34
-\Umathcode `\5 = 0 \normalfam "35
-\Umathcode `\6 = 0 \normalfam "36
-\Umathcode `\7 = 0 \normalfam "37
-\Umathcode `\8 = 0 \normalfam "38
-\Umathcode `\9 = 0 \normalfam "39
-\Umathcode `\A = 0 \normalfam "1D434
-\Umathcode `\B = 0 \normalfam "1D435
-\Umathcode `\C = 0 \normalfam "1D436
-\Umathcode `\D = 0 \normalfam "1D437
-\Umathcode `\E = 0 \normalfam "1D438
-\Umathcode `\F = 0 \normalfam "1D439
-\Umathcode `\G = 0 \normalfam "1D43A
-\Umathcode `\H = 0 \normalfam "1D43B
-\Umathcode `\I = 0 \normalfam "1D43C
-\Umathcode `\J = 0 \normalfam "1D43D
-\Umathcode `\K = 0 \normalfam "1D43E
-\Umathcode `\L = 0 \normalfam "1D43F
-\Umathcode `\M = 0 \normalfam "1D440
-\Umathcode `\N = 0 \normalfam "1D441
-\Umathcode `\O = 0 \normalfam "1D442
-\Umathcode `\P = 0 \normalfam "1D443
-\Umathcode `\Q = 0 \normalfam "1D444
-\Umathcode `\R = 0 \normalfam "1D445
-\Umathcode `\S = 0 \normalfam "1D446
-\Umathcode `\T = 0 \normalfam "1D447
-\Umathcode `\U = 0 \normalfam "1D448
-\Umathcode `\V = 0 \normalfam "1D449
-\Umathcode `\W = 0 \normalfam "1D44A
-\Umathcode `\X = 0 \normalfam "1D44B
-\Umathcode `\Y = 0 \normalfam "1D44C
-\Umathcode `\Z = 0 \normalfam "1D44D
-\Umathcode `\a = 0 \normalfam "1D44E
-\Umathcode `\b = 0 \normalfam "1D44F
-\Umathcode `\c = 0 \normalfam "1D450
-\Umathcode `\d = 0 \normalfam "1D451
-\Umathcode `\e = 0 \normalfam "1D452
-\Umathcode `\f = 0 \normalfam "1D453
-\Umathcode `\g = 0 \normalfam "1D454
-\Umathcode `\h = 0 \normalfam "0210E % Planck constant
-\Umathcode `\i = 0 \normalfam "1D456
-\Umathcode `\j = 0 \normalfam "1D457
-\Umathcode `\k = 0 \normalfam "1D458
-\Umathcode `\l = 0 \normalfam "1D459
-\Umathcode `\m = 0 \normalfam "1D45A
-\Umathcode `\n = 0 \normalfam "1D45B
-\Umathcode `\o = 0 \normalfam "1D45C
-\Umathcode `\p = 0 \normalfam "1D45D
-\Umathcode `\q = 0 \normalfam "1D45E
-\Umathcode `\r = 0 \normalfam "1D45F
-\Umathcode `\s = 0 \normalfam "1D460
-\Umathcode `\t = 0 \normalfam "1D461
-\Umathcode `\u = 0 \normalfam "1D462
-\Umathcode `\v = 0 \normalfam "1D463
-\Umathcode `\w = 0 \normalfam "1D464
-\Umathcode `\x = 0 \normalfam "1D465
-\Umathcode `\y = 0 \normalfam "1D466
-\Umathcode `\z = 0 \normalfam "1D467
-\Umathcode `\Α = 0 \normalfam "1D6E2
-\Umathcode `\Β = 0 \normalfam "1D6E3
-\Umathcode `\Γ = 0 \normalfam "1D6E4
-\Umathcode `\Δ = 0 \normalfam "1D6E5
-\Umathcode `\Ε = 0 \normalfam "1D6E6
-\Umathcode `\Ζ = 0 \normalfam "1D6E7
-\Umathcode `\Η = 0 \normalfam "1D6E8
-\Umathcode `\Θ = 0 \normalfam "1D6E9
-\Umathcode `\Ι = 0 \normalfam "1D6EA
-\Umathcode `\Κ = 0 \normalfam "1D6EB
-\Umathcode `\Λ = 0 \normalfam "1D6EC
-\Umathcode `\Μ = 0 \normalfam "1D6ED
-\Umathcode `\Ν = 0 \normalfam "1D6EE
-\Umathcode `\Ξ = 0 \normalfam "1D6EF
-\Umathcode `\Ο = 0 \normalfam "1D6F0
-\Umathcode `\Π = 0 \normalfam "1D6F1
-\Umathcode `\Ρ = 0 \normalfam "1D6F2
-\Umathcode `\Σ = 0 \normalfam "1D6F4
-\Umathcode `\Τ = 0 \normalfam "1D6F5
-\Umathcode `\Υ = 0 \normalfam "1D6F6
-\Umathcode `\Φ = 0 \normalfam "1D6F7
-\Umathcode `\Χ = 0 \normalfam "1D6F8
-\Umathcode `\Ψ = 0 \normalfam "1D6F9
-\Umathcode `\Ω = 0 \normalfam "1D6FA
-\Umathcode `\α = 0 \normalfam "1D6FC
-\Umathcode `\β = 0 \normalfam "1D6FD
-\Umathcode `\γ = 0 \normalfam "1D6FE
-\Umathcode `\δ = 0 \normalfam "1D6FF
-\Umathcode `\ε = 0 \normalfam "1D700
-\Umathcode `\ζ = 0 \normalfam "1D701
-\Umathcode `\η = 0 \normalfam "1D702
-\Umathcode `\θ = 0 \normalfam "1D703
-\Umathcode `\ι = 0 \normalfam "1D704
-\Umathcode `\κ = 0 \normalfam "1D705
-\Umathcode `\λ = 0 \normalfam "1D706
-\Umathcode `\μ = 0 \normalfam "1D707
-\Umathcode `\ν = 0 \normalfam "1D708
-\Umathcode `\ξ = 0 \normalfam "1D709
-\Umathcode `\ο = 0 \normalfam "1D70A
-\Umathcode `\π = 0 \normalfam "1D70B
-\Umathcode `\ρ = 0 \normalfam "1D70C
-\Umathcode `\ς = 0 \normalfam "1D70D
-\Umathcode `\σ = 0 \normalfam "1D70E
-\Umathcode `\τ = 0 \normalfam "1D70F
-\Umathcode `\υ = 0 \normalfam "1D710
-\Umathcode `\φ = 0 \normalfam "1D719
-\Umathcode `\χ = 0 \normalfam "1D712
-\Umathcode `\ψ = 0 \normalfam "1D713
-\Umathcode `\ω = 0 \normalfam "1D714
-\Umathcode `\ϑ = 0 \normalfam "1D717
-\Umathcode `\ϕ = 0 \normalfam "1D711
-\Umathcode `\ϖ = 0 \normalfam "1D71B
-\Umathcode `\ϰ = 0 \normalfam "1D718
-\Umathcode `\ϱ = 0 \normalfam "1D71A
-\Umathcode `\ϴ = 0 \normalfam "1D6F3
-\Umathcode `\ϵ = 0 \normalfam "1D716
+\Umathcode `\0 = 7 \mrmfam `\0 %"30
+\Umathcode `\1 = 7 \mrmfam `\1 %"31
+\Umathcode `\2 = 7 \mrmfam `\2 %"32
+\Umathcode `\3 = 7 \mrmfam `\3 %"33
+\Umathcode `\4 = 7 \mrmfam `\4 %"34
+\Umathcode `\5 = 7 \mrmfam `\5 %"35
+\Umathcode `\6 = 7 \mrmfam `\6 %"36
+\Umathcode `\7 = 7 \mrmfam `\7 %"37
+\Umathcode `\8 = 7 \mrmfam `\8 %"38
+\Umathcode `\9 = 7 \mrmfam `\9 %"39
+\Umathcode `\A = 7 \mitfam `\A %"1D434
+\Umathcode `\B = 7 \mitfam `\B %"1D435
+\Umathcode `\C = 7 \mitfam `\C %"1D436
+\Umathcode `\D = 7 \mitfam `\D %"1D437
+\Umathcode `\E = 7 \mitfam `\E %"1D438
+\Umathcode `\F = 7 \mitfam `\F %"1D439
+\Umathcode `\G = 7 \mitfam `\G %"1D43A
+\Umathcode `\H = 7 \mitfam `\H %"1D43B
+\Umathcode `\I = 7 \mitfam `\I %"1D43C
+\Umathcode `\J = 7 \mitfam `\J %"1D43D
+\Umathcode `\K = 7 \mitfam `\K %"1D43E
+\Umathcode `\L = 7 \mitfam `\L %"1D43F
+\Umathcode `\M = 7 \mitfam `\M %"1D440
+\Umathcode `\N = 7 \mitfam `\N %"1D441
+\Umathcode `\O = 7 \mitfam `\O %"1D442
+\Umathcode `\P = 7 \mitfam `\P %"1D443
+\Umathcode `\Q = 7 \mitfam `\Q %"1D444
+\Umathcode `\R = 7 \mitfam `\R %"1D445
+\Umathcode `\S = 7 \mitfam `\S %"1D446
+\Umathcode `\T = 7 \mitfam `\T %"1D447
+\Umathcode `\U = 7 \mitfam `\U %"1D448
+\Umathcode `\V = 7 \mitfam `\V %"1D449
+\Umathcode `\W = 7 \mitfam `\W %"1D44A
+\Umathcode `\X = 7 \mitfam `\X %"1D44B
+\Umathcode `\Y = 7 \mitfam `\Y %"1D44C
+\Umathcode `\Z = 7 \mitfam `\Z %"1D44D
+\Umathcode `\a = 7 \mitfam `\a %"1D44E
+\Umathcode `\b = 7 \mitfam `\b %"1D44F
+\Umathcode `\c = 7 \mitfam `\c %"1D450
+\Umathcode `\d = 7 \mitfam `\d %"1D451
+\Umathcode `\e = 7 \mitfam `\e %"1D452
+\Umathcode `\f = 7 \mitfam `\f %"1D453
+\Umathcode `\g = 7 \mitfam `\g %"1D454
+\Umathcode `\h = 7 \mitfam `\h %"0210E % Planck constant
+\Umathcode `\i = 7 \mitfam `\i %"1D456
+\Umathcode `\j = 7 \mitfam `\j %"1D457
+\Umathcode `\k = 7 \mitfam `\k %"1D458
+\Umathcode `\l = 7 \mitfam `\l %"1D459
+\Umathcode `\m = 7 \mitfam `\m %"1D45A
+\Umathcode `\n = 7 \mitfam `\n %"1D45B
+\Umathcode `\o = 7 \mitfam `\o %"1D45C
+\Umathcode `\p = 7 \mitfam `\p %"1D45D
+\Umathcode `\q = 7 \mitfam `\q %"1D45E
+\Umathcode `\r = 7 \mitfam `\r %"1D45F
+\Umathcode `\s = 7 \mitfam `\s %"1D460
+\Umathcode `\t = 7 \mitfam `\t %"1D461
+\Umathcode `\u = 7 \mitfam `\u %"1D462
+\Umathcode `\v = 7 \mitfam `\v %"1D463
+\Umathcode `\w = 7 \mitfam `\w %"1D464
+\Umathcode `\x = 7 \mitfam `\x %"1D465
+\Umathcode `\y = 7 \mitfam `\y %"1D466
+\Umathcode `\z = 7 \mitfam `\z %"1D467
+\Umathcode `\Α = 7 \mrmfam `\Α %"1D6E2
+\Umathcode `\Β = 7 \mrmfam `\Β %"1D6E3
+\Umathcode `\Γ = 7 \mrmfam `\Γ %"1D6E4
+\Umathcode `\Δ = 7 \mrmfam `\Δ %"1D6E5
+\Umathcode `\Ε = 7 \mrmfam `\Ε %"1D6E6
+\Umathcode `\Ζ = 7 \mrmfam `\Ζ %"1D6E7
+\Umathcode `\Η = 7 \mrmfam `\Η %"1D6E8
+\Umathcode `\Θ = 7 \mrmfam `\Θ %"1D6E9
+\Umathcode `\Ι = 7 \mrmfam `\Ι %"1D6EA
+\Umathcode `\Κ = 7 \mrmfam `\Κ %"1D6EB
+\Umathcode `\Λ = 7 \mrmfam `\Λ %"1D6EC
+\Umathcode `\Μ = 7 \mrmfam `\Μ %"1D6ED
+\Umathcode `\Ν = 7 \mrmfam `\Ν %"1D6EE
+\Umathcode `\Ξ = 7 \mrmfam `\Ξ %"1D6EF
+\Umathcode `\Ο = 7 \mrmfam `\Ο %"1D6F0
+\Umathcode `\Π = 7 \mrmfam `\Π %"1D6F1
+\Umathcode `\Ρ = 7 \mrmfam `\Ρ %"1D6F2
+\Umathcode `\Σ = 7 \mrmfam `\Σ %"1D6F4
+\Umathcode `\Τ = 7 \mrmfam `\Τ %"1D6F5
+\Umathcode `\Υ = 7 \mrmfam `\Υ %"1D6F6
+\Umathcode `\Φ = 7 \mrmfam `\Φ %"1D6F7
+\Umathcode `\Χ = 7 \mrmfam `\Χ %"1D6F8
+\Umathcode `\Ψ = 7 \mrmfam `\Ψ %"1D6F9
+\Umathcode `\Ω = 7 \mrmfam `\Ω %"1D6FA
+\Umathcode `\α = 7 \mitfam `\α %"1D6FC
+\Umathcode `\β = 7 \mitfam `\β %"1D6FD
+\Umathcode `\γ = 7 \mitfam `\γ %"1D6FE
+\Umathcode `\δ = 7 \mitfam `\δ %"1D6FF
+\Umathcode `\ε = 7 \mitfam `\ε %"1D700
+\Umathcode `\ζ = 7 \mitfam `\ζ %"1D701
+\Umathcode `\η = 7 \mitfam `\η %"1D702
+\Umathcode `\θ = 7 \mitfam `\θ %"1D703
+\Umathcode `\ι = 7 \mitfam `\ι %"1D704
+\Umathcode `\κ = 7 \mitfam `\κ %"1D705
+\Umathcode `\λ = 7 \mitfam `\λ %"1D706
+\Umathcode `\μ = 7 \mitfam `\μ %"1D707
+\Umathcode `\ν = 7 \mitfam `\ν %"1D708
+\Umathcode `\ξ = 7 \mitfam `\ξ %"1D709
+\Umathcode `\ο = 7 \mitfam `\ο %"1D70A
+\Umathcode `\π = 7 \mitfam `\π %"1D70B
+\Umathcode `\ρ = 7 \mitfam `\ρ %"1D70C
+\Umathcode `\ς = 7 \mitfam `\ς %"1D70D
+\Umathcode `\σ = 7 \mitfam `\σ %"1D70E
+\Umathcode `\τ = 7 \mitfam `\τ %"1D70F
+\Umathcode `\υ = 7 \mitfam `\υ %"1D710
+\Umathcode `\φ = 7 \mitfam `\φ %"1D719
+\Umathcode `\χ = 7 \mitfam `\χ %"1D712
+\Umathcode `\ψ = 7 \mitfam `\ψ %"1D713
+\Umathcode `\ω = 7 \mitfam `\ω %"1D714
+\Umathcode `\ϑ = 7 \mitfam `\ϑ %"1D717
+\Umathcode `\ϕ = 7 \mitfam `\ϕ %"1D711
+\Umathcode `\ϖ = 7 \mitfam `\ϖ %"1D71B
+\Umathcode `\ϰ = 7 \mitfam `\ϰ %"1D718
+\Umathcode `\ϱ = 7 \mitfam `\ϱ %"1D71A
+\Umathcode `\ϴ = 7 \mrmfam `\ϴ %"1D6F3
+\Umathcode `\ϵ = 7 \mitfam `\ϵ %"1D716
 % Some rarely-used Greek letters
-\Umathcode `\Ϝ = 0 \normalfam "003DC
-\Umathcode `\ϝ = 0 \normalfam "003DD
-\Umathcode `\϶ = 0 \normalfam "003F6
-
-\input unimath-plain-alphabet
-\let\itbf=\bfit
-\let\itsf=\sfit
-\let\bfsf=\sfbf
-\let\sfitbf=\sfbfit
-\let\bfsfit=\sfbfit
-\let\bfitsf=\sfbfit
-\let\itsfbf=\sfbfit
-\let\itbfsf=\sfbfit
-\let\cal=\scr
-\let\bfscr=\scrbf
-\let\bffrak=\frakbf
-\let\itbb=\bbit
+\Umathcode `\Ϝ = 0 \ordfam "003DC
+\Umathcode `\ϝ = 0 \ordfam "003DD
+\Umathcode `\϶ = 0 \ordfam "003F6
 
 % Greek letter command
 \let\Alpha=Α      \let\Beta=Β     \let\Gamma=Γ    \let\Delta=Δ

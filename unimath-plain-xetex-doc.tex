@@ -12,6 +12,7 @@
 \def\mathfontname{Erewhon Math}
 \def\textfontopt{mapping=tex-text,}
 \input unimath-plain-xetex
+
 \unicodeprimesoff
 \betweenprimeskip=-1mu\relax
 
@@ -29,6 +30,10 @@
 \font\sevenlmmath="Latin Modern Math:script=math,+ssty=0" at 7pt
 \makefontcmdcompatible{ten}
 
+\font\manfnt="manfnt" at 10pt
+\def\dbend{{\manfnt\char127}}
+\def\ddanger{\noindent\hangindent=32pt\hangafter=-2
+  \hbox to 0pt{\hss\dbend\kern1pt\dbend\kern3pt}}
 \def\ttverbatim{\begingroup
   \catcode`\\=12 \catcode`\{=12 \catcode`\}=12 \catcode`\$=12
   \catcode`\&=12 \catcode`\#=12 \catcode`\%=12 \catcode`\~=12
@@ -107,7 +112,7 @@
 \centerline{Zhang Tingxuan}
 \medskip
 
-\centerline{2022/12/23\quad Version 0.1a}
+\centerline{2023/01/03\quad Version 0.2}
 \biggskip
 
 \begingroup\parskip0pt
@@ -201,25 +206,42 @@ will make commands like "\fortyfourrm" and "\verytinysfbfit" available.
 
 
 \section{Math font commands}
-%Traditional plain \tex\ uses "\fam" mechanism to change the font of letters 
-%and numbers in math mode. But using the "\fam" mechanism to change the face 
-%of a math symbol in an OpenType math font is almost impossible. For example, 
-%the roman ``${\rm A}$'' is encoded U+0041, but the italic math ``$A$'' is 
-%encoded U+1D434.But this problem can be solved through redefining the math 
-%character.
 You can input math formulae just like using traditional plain \tex. But 
-OpenType math font is loaded. For example, "$a{\bf0}={\bf0}$" yields 
-$a{\bf0}={\bf0}$. Available math font commands are listed below:
+OpenType math font is loaded. For example, "$a{\mbf0}={\mbf0}$" yields 
+$a{\mbf0}={\mbf0}$. Available math font commands are listed below:
 \begintt
-\rm, \bf, \it, \bfit, \sf, \sfbf, \sfit, \sfbfit,
-\tt, \cal, \calbf, \bb, \bbit, \frak, \frakbf
+\mrm, \mbf, \mit, \msf, \mtt, 
+\mbfit, \msfbf, \msfit, \msfbfit,
+\cal, \calbf, \bb, \bbit, \frak, \frakbf
 \endtt
 The \<family>-\<series>-\<shape> order of these commands allows being random; 
 "cal" can be replaced by "scr".
 
+\ddanger{\bf Please notice,} that the commands in the first and second 
+line of the chart above contain an extra ``"m"'' in the beginning of commands. 
+For example, the first ``"m"'' in the ``"\mrm"'' command in the first line. 
+If you didn't write the ``"m"'' in these commands, the font selected by the 
+commands would be no more math font, but text font.
+
+The ``math font'' we said here means the font selected by "\mathfontname", 
+"\mathalphafontname" and so on; the ``text font'' means the font selected by 
+"\mainfontname", "\sansfontname" and "\monofontname". For example,
+$$\vbox{\openup3pt\halign{#\hfil&\qquad#\hfil\cr
+{\tenit Input}&{\tenit yields}\cr
+"$\mit   abcdefg \mbfit   hijklmn$" & 
+  $\mit   abcdefg \mbfit   hijklmn$\cr
+"$\it    abcdefg \bfit    hijklmn$" & 
+  $\it    abcdefg \bfit    hijklmn$\cr
+"$\msfit abcdefg \msfbfit hijklmn$" & 
+  $\msfit abcdefg \msfbfit hijklmn$\cr
+"$\sfit  abcdefg \sfbfit  hijklmn$" & 
+  $\sfit  abcdefg \sfbfit  hijklmn$\cr}}$$
+A group of symbols in math font can be regarded as separate symbols, and
+a group of symbols in text font can be regarded as a whole.
+
 This package uses "unicode-math-symbols.tex" to generate math symbol commands, 
-the source file can be found in \pkg{unicode-math} package. To find all of 
-the math symbol commands, you can execute
+the source file can be found in \pkg{unicode-math} (\latex) package. To find 
+all of the math symbol commands, you can execute
 \begintt
 texdoc unimath-symbols
 \endtt
@@ -316,6 +338,8 @@ symbols, punctuations and ``"!"''. For example, ``","'', ``":"'' and
 like ``"+"'' and ``"="''.
 
 "\mathaccentfontname" will influence the font of math accents like "\dot".
+
+
 
 \closeout\tocout
 \bye
