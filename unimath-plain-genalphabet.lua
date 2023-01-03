@@ -53,9 +53,11 @@ out:write(tex_info.."\n")
 for templine in io.lines(um_table) do
     if string.match(templine, "\\[mB][bfitsu].*\\mathalpha") then
         tmp_out:write(templine.."\n")
-    else if string.match(templine, "\\m[bfitsu].*\\mathord") then
+    elseif string.match(templine, "\\m[bfitsu].*\\mathord") then
         tmp_out:write(templine.."\n")
-    end end
+    elseif string.match(templine, "\\Planckconst") then
+        tmp_out:write(templine:gsub("\\Planckconst", "\\mith       ").."\n")
+    end
 end
 tmp_out:close()
 
