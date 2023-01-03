@@ -1,0 +1,10 @@
+pass(Unicode)
+
+LHSName "ascii_char"
+RHSName "unicode_char"
+
+U+0044 <> U+02145
+U+0064 <> U+02146
+U+0065 <> U+02147
+U+0069 <> U+02148
+U+006A <> U+02149
