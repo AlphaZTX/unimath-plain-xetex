@@ -1,0 +1,345 @@
+%% The document of unimath-plain-xetex
+%% ******************************************************
+%% * This work may be distributed and/or modified under *
+%% * the conditions of the LaTeX Project Public License *
+%% *     http://www.latex-project.org/lppl.txt          *
+%% * either version 1.3c of this license or any later   *
+%% * version.                                           *
+%% ******************************************************
+\def\mainfontname{erewhon}
+\def\sansfontname{Fira Sans Book}
+\def\monofontname{Noto Sans Mono}
+\def\mathfontname{Erewhon Math}
+\def\textfontopt{mapping=tex-text,}
+\input unimath-plain-xetex
+
+\unicodeprimesoff
+\betweenprimeskip=-1mu\relax
+
+\def\xetex{X\kern-.125em\lower.5ex\hbox{\char"018E}\kern-.1667em%
+  T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX}
+\let\XeTeX\xetex
+\let\tex\TeX
+\def\latex{L\kern-.24em{\setbox0=\hbox{T}\vbox to \ht0{\hbox{\sevenrm A}\vss}}%
+  \kern-.12em\TeX}
+\def\umpx{unimath-plain-\xetex}
+\def\biggskip{\vskip24pt plus 8pt minus 4pt}
+\def\pkg#1{{\tensf #1}}
+\font\hugesans="\sansfontname" at 35pt
+\font\Hugesansbf="\sansfontname/B" at 72pt
+\font\sevenlmmath="Latin Modern Math:script=math,+ssty=0" at 7pt
+\makefontcmdcompatible{ten}
+
+\font\manfnt="manfnt" at 10pt
+\def\dbend{{\manfnt\char127}}
+\def\ddanger{\noindent\hangindent=32pt\hangafter=-2
+  \hbox to 0pt{\hss\dbend\kern1pt\dbend\kern3pt}}
+\def\ttverbatim{\begingroup
+  \catcode`\\=12 \catcode`\{=12 \catcode`\}=12 \catcode`\$=12
+  \catcode`\&=12 \catcode`\#=12 \catcode`\%=12 \catcode`\~=12
+  \catcode`\_=12 \catcode`\^=12 \catcode`\ =12 \obeylines \tentt}
+\outer\def\begintt{$$\let\par=\endgraf \ttverbatim \parskip=0pt
+  \catcode`\|=0 \rightskip-2pc \ttfinish}
+{\catcode`\|=0 |catcode`|\=12 % | is temporary escape character
+  |obeylines % end of line is active
+  |gdef|ttfinish#1^^M#2\endtt{#1|vbox{#2}|endgroup$$}}
+\def\charhex{\char"}
+\catcode`\"=\active
+{\obeylines \gdef"{\ttverbatim \spaceskip.5em \let^^M=\  \let"=\endgroup}}
+\def\<#1>{$\langle${\it#1\/}$\rangle$}
+
+\long\def\scalehbox#1#2#3{%
+  \leavevmode
+  \setbox0\hbox{{#3}}%
+  \setbox1\hbox{%
+    \special{pdf:btrans}%
+    \special{x:scale #1 #2}%
+    \hbox to 0pt{\copy0\hss}%
+    \special{pdf:etrans}%
+  }%
+  \ht1#2\ht0
+  \dp1#2\dp0
+  \hbox to#1\wd0{\box1\kern#1\wd0\hss}%
+}
+\long\def\colorspec#1#2#3#4{\special{color push rgb #1 #2 #3}#4
+  \special{color pop}}
+\def\green{\colorspec{0.08}{0.52}{0.08}}
+
+\newdimen\paperwd
+\newdimen\paperht
+\newdimen\hmarginwd
+\newdimen\vmarginht
+\hsize=12cm
+\vsize=16cm
+\hmarginwd=3cm
+\vmarginht=3cm
+\hoffset=\dimexpr\hmarginwd-1in\relax
+\voffset=\dimexpr\vmarginht-1in\relax
+\paperwd=\dimexpr2\hmarginwd+\hsize\relax
+\paperht=\dimexpr2\vmarginht+\vsize\relax
+\special{papersize=\the\paperwd,\the\paperht}
+\headline={\ifnum\pageno=1\hss\else\hss\vbox to 0pt{\vss\hbox to 0pt{\kern28pt%
+  \colorspec{0.72}{0.88}{0.72}{\Hugesansbf\folio}\hss}\kern4pt}\fi}
+\footline={\hss}
+\long\def\protectedwrite#1#2{\edef\wrt{\write#1{#2}}\wrt}
+
+\newcount\secno
+\secno=0
+\newwrite\tocout
+\edef\tocname{\jobname.toc}
+\openout\tocout=\tocname
+\newread\tocin
+\openin\tocin=\tocname
+\long\outer\def\section#1{\par\bigskip\penalty-1000%
+  \noindent \advance\secno by 1\relax
+  {\green{%
+    \twelvebf\hbox to 0pt{\hss\twentybf\the\secno\kern12pt}#1%
+  }}%
+  \protectedwrite\tocout{\the\secno\quad 
+    #1\hskip.5em\leaders\hbox to 1.2em{.\hss}\hfill}%
+  \write\tocout{\hbox to .5em{\hss\the\pageno}\par}%
+  \par\medskip\penalty1000\relax}
+\parindent=2pc
+\parskip=3pt plus 2pt minus 1pt\relax
+
+% title
+\centerline{\twentyrm\green{The
+  \scalehbox{0.5}{0.5}{\special{pdf:code q 1 Tr}%
+    {\hugesans\umpx}%
+  \special{pdf:code Q}} package}}
+\biggskip
+
+\centerline{Zhang Tingxuan}
+\medskip
+
+\centerline{2023/03/06\quad Version 0.2b}
+\biggskip
+
+\begingroup\parskip0pt
+\centerline{\bf Abstract}
+\smallskip
+\leftskip=4pc\rightskip=4pc\parindent=1.5pc\relax
+{\sf\umpx} package provides OpenType math font support in {\it plain \tex\/} 
+format. The {\sf\umpx} package needs \xetex.\par
+
+% TOC
+\bigskip
+\centerline{\bf Contents}
+\smallskip
+\parindent=0pt\relax
+\ifeof\tocin\else\closein\tocin\input\tocname\fi
+\endgroup\bigskip
+
+
+\section{How to use this package?}
+Please notice again that you're using {\it plain\/} format but not 
+\latex\ format. If you are using \latex\ format, please use 
+\pkg{unicode-math} package instead.
+
+In your document, write
+\begintt
+\input unimath-plain-xetex
+\endtt
+Then compile your document with "xetex", you can get OpenType math support 
+in your document. The package will set the math font ``Latin Modern Math'' 
+with ``Latin Modern'' text fonts in default. To change the font, you can 
+define some names before loading the package. For example,
+\begintt
+\def\mainfontname{TeX Gyre Termes}
+\def\sansfontname{TeX Gyre Heros}
+\def\monofontname{TeX Gyre Cursors}
+\def\mathfontname{TeX Gyre Termes Math}
+\input unimath-plain-xetex
+\endtt
+Your text fonts will be set in the first 3 lines and your math font will 
+be set in the fourth line.
+
+Currently, the package supports only font family names to use, if 
+you want to use the file names, you can revise the code in 
+"unimath-plain-xetex.tex".
+
+
+
+\section{Text font commands}
+The package provides text font commands in the format of 
+$$\hbox{"\"\<pt-size>\<family>\<series>\<shape>}$$
+such as "\tensfbfit", "\twelvebf", etc. The packages provides 
+font commands in size of 5\,pt, 7\,pt, 9\,pt, 10\,pt, 12\,pt and 20\,pt, 
+such as "\fiverm", "\sevensf", "\twelvett", etc.
+
+Take ten point as an example,
+$$\begingroup\let\tentt\seventt%
+  \vbox{\openup-1pt\halign{#\hfil&\ \ #\hfil&\ \ #\hfil\cr 
+    \green{\sevenrm(Serif)} & {\sevenrm Upright} & {\sevenit Italic} \cr
+    {\sevenrm Medium}& "\tenrm"    & "\tenit"     \cr
+    {\sevenbf Bold}  & "\tenbf"    & "\tenbfit"   \cr}}\ \vrule\ \ 
+  \vbox{\openup-1pt\halign{#\hfil&\ \ #\hfil&\ \ #\hfil\cr 
+    \green{\sevensf(Sans)}  & {\sevensf Upright}  & {\sevensfit Italic} \cr
+    {\sevensf Medium} & "\tensf"   & "\tensfit"   \cr
+    {\sevensfbf Bold} & "\tensfbf" & "\tensfbfit" \cr}}\ \vrule\ \ 
+  \vbox{\openup-1pt\halign{#\hfil&\ \ #\hfil&\ \ #\hfil\cr 
+    \green{\seventt(Mono)}  & {\seventt Upright}  & {\seventtit Italic} \cr
+    {\seventt Medium} & "\tentt"   & "\tenttit"   \cr
+    {\seventtbf Bold} & "\tenttbf" & "\tenttbfit" \cr}}
+\endgroup$$
+The font commands can be used as those provided in "plain.tex", for example,
+"{\tenbfit ABC}" yields {\tenbfit ABC}.
+
+But if you would't like to remember that many commands, you can write
+$$\hbox{\tentt"\makefontcmdcompatible"\{\<pt-size>\}}$$
+after loading the package. For example, if you write
+\begintt
+\makefontcmdcompatible{ten}
+\endtt
+the \<family>-\<series>-\<shape> order of "\ten"\<some> commands 
+can be write randomly: writing "\tenbfsfit" is the same as "\tensfbfit".
+
+You can also get more text font commands through the "\genfontcmd" command:
+$$\hbox{\tentt"\genfontcmd"\{\<pt-size>\}\{\<dimension>\}}$$
+For example, 
+\begintt
+\genfontcmd{fortyfour}{44pt}
+\genfontcmd{verytiny}{2bp}
+\endtt
+will make commands like "\fortyfourrm" and "\verytinysfbfit" available.
+
+
+
+\section{Math font commands}
+You can input math formulae just like using traditional plain \tex. But 
+OpenType math font is loaded. For example, "$a{\mbf0}={\mbf0}$" yields 
+$a{\mbf0}={\mbf0}$. Available math font commands are listed below:
+\begintt
+\mrm, \mbf, \mit, \msf, \mtt, 
+\mbfit, \msfbf, \msfit, \msfbfit,
+\cal, \calbf, \bb, \bbit, \frak, \frakbf
+\endtt
+The \<family>-\<series>-\<shape> order of these commands allows being random; 
+"cal" can be replaced by "scr".
+
+\ddanger{\bf Please notice,} that the commands in the first and second 
+line of the chart above contain an extra ``"m"'' in the beginning of commands. 
+For example, the first ``"m"'' in the ``"\mrm"'' command in the first line. 
+If you didn't write the ``"m"'' in these commands, the font selected by the 
+commands would be no more math font, but text font.
+
+The ``math font'' we said here means the font selected by "\mathfontname", 
+"\mathalphafontname" and so on; the ``text font'' means the font selected by 
+"\mainfontname", "\sansfontname" and "\monofontname". For example,
+$$\vbox{\openup3pt\halign{#\hfil&\qquad#\hfil\cr
+{\tenit Input}&{\tenit yields}\cr
+"$\mit   abcdefg \mbfit   hijklmn$" & 
+  $\mit   abcdefg \mbfit   hijklmn$\cr
+"$\it    abcdefg \bfit    hijklmn$" & 
+  $\it    abcdefg \bfit    hijklmn$\cr
+"$\msfit abcdefg \msfbfit hijklmn$" & 
+  $\msfit abcdefg \msfbfit hijklmn$\cr
+"$\sfit  abcdefg \sfbfit  hijklmn$" & 
+  $\sfit  abcdefg \sfbfit  hijklmn$\cr}}$$
+A group of symbols in math font can be regarded as separate symbols, and
+a group of symbols in text font can be regarded as a whole.
+
+This package uses "unicode-math-symbols.tex" to generate math symbol commands, 
+the source file can be found in \pkg{unicode-math} (\latex) package. To find 
+all of the math symbol commands, you can execute
+\begintt
+texdoc unimath-symbols
+\endtt
+in Terminal.
+
+You can also input Unicode math characters in your document's source file. 
+For example, 
+$$\vbox{\openup3pt\halign{#\hfil&\qquad#\hfil\cr
+{\tenit Input}&{\tenit yields}\cr
+"$ ∑_{i=0}^∞ ∫_a^b ρ_i \, {\rm d} τ' $" & 
+  $∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$\cr
+"$$∑_{i=0}^∞ ∫_a^b ρ_i \, {\rm d} τ'$$" & 
+  $\displaystyle ∑_{i=0}^∞ ∫_a^b ρ_i\,{\rm d}τ'$\cr}}$$
+
+
+
+\section{Primes ($'$)}
+The package changed ``"'"'' command in math mode, which yields prime(s) 
+in superscript. After loading this package, the primes produced by ``"'"'' 
+will be turned into Unicode primes:
+$$\vbox{\openup2pt\halign{#\hfil\quad&\quad#\hfil\quad&\quad#\hfil\cr
+{\tenit Input} & {\tenit yields} & {\tenit Unicode slot}\cr
+"$'$"     & $^{\hbox{\sevenlmmath\charhex2032}}$ & U+2032 \cr
+"$''$"    & $^{\hbox{\sevenlmmath\charhex2033}}$ & U+2033 \cr
+"$'''$"   & $^{\hbox{\sevenlmmath\charhex2034}}$ & U+2034 \cr
+"$''''$"  & $^{\hbox{\sevenlmmath\charhex2057}}$ & U+2057 \cr
+"$'''''$" & $^{\hbox{\sevenlmmath\charhex2032
+  \hskip-.15em\charhex2032
+  \hskip-.15em\charhex2032
+  \hskip-.15em\charhex2032
+  \hskip-.15em\charhex2032}}$
+  & $(\hbox{U+2032})\times5$\cr
+$\vdots$ & $\vdots$ & $\vdots$ \cr
+$(\hbox{"'"})\times N$ & $(^{\hbox{\sevenlmmath\charhex2032}})\times N$ &
+$(\hbox{U+2032})\times N$\hbox to 20pt{\quad$(N>4)$\hss} \cr
+}}$$
+However, some OpenType math fonts don't contain some of the characters above. 
+For example, there is no U+2032, U+2033 or U+2034 in Erewhon Math. 
+When using such fonts, you can ``turn off'' the Unicode primes easily 
+by inputing the following line {\it after} loading the package:
+\begintt
+\unicodeprimesoff
+\endtt
+Then when you input ``"'"'' $n$ times you will get $n$ primes, 
+and each prime's Unicode character slot is U+2032, even when $n\leq 4$.
+
+If the primes contain more than one single prime encoded U+2032, 
+a negative math skip will inserted between every two single primes. 
+This math skip is defined as "\betweenprimeskip" and its default value 
+is "-2.7mu", which is proper for Latin Modern Math. To change the value 
+of "\betweenprimeskip" is just like change any math skip, for example,
+\begintt
+\betweenprimeskip=-1mu
+\endtt
+This line should also be written {\it after} loading the package.
+
+\section{Using multiple math fonts}
+You can use more than one OpenType math fonts in math mode. 
+This is the method to set multiple math fonts:
+$$\vbox{%
+  \hbox{"\def\mathalphafontname{"\<font family name>"}"}%
+  \hbox{"\def\mathdelimiterfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathordfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathopfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathbinfontname{"\<font family name>"}"}%
+  \hbox{"\def\mathaccentfontname{"\<font family name>"}"}%
+}$$
+Such definitions should be written {\tenit before} "\input"ing the package. 
+For example, 
+\begintt
+\def\mathfontname{XITS Math}
+\def\mathalphafontname{TeX Gyre Pagella Math}
+\input unimath-plain-xetex
+\endtt
+Then your math font will be set as XITS Math and the font of variable family 
+(numbers, Latin and Greek letters) will be set as \TeX\ Gyre Pagella Math.
+
+"\mathalphafontname" will influence the font of numbers ("0"--"9"), Latin 
+letters ("A"--"Z", "a"--"z") and Greek letters ("\alpha" and so on). 
+
+"\mathdelimiterfontname" will influence the font of math delimiters, 
+for example, extensible open symbols, close symbols and ordinary symbols 
+like "\{", "\}", "\vert" and so on. 
+Horizontal delimiters (or very long accents) are also influenced by 
+"\mathdelimiterfontname".
+
+"\mathordfontname" will influence the font of non-delimiter ordinary 
+symbols, punctuations and ``"!"''. For example, ``","'', ``":"'' and 
+"\colon"'s font will be influenced by it.
+
+"\mathopfontname" will influence the font of large operators like "\sum".
+
+"\mathbinfontname" will influence the font of binary operators and relations 
+like ``"+"'' and ``"="''.
+
+"\mathaccentfontname" will influence the font of math accents like "\dot".
+
+
+
+\closeout\tocout
+\bye
