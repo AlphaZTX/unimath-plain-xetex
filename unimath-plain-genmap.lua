@@ -1,16 +1,22 @@
--- Run this Lua script to generate "unimath-plain-xetex-alphabet.tex".
--- This script needs kpathsea library which is provided by LuaTeX.
--- You can "luatex" a file including 
---     \directlua{dofile("unimath-plain-genalphabet.lua")}
+-- ******************************************************
+-- * This work may be distributed and/or modified under *
+-- * the conditions of the LaTeX Project Public License *
+-- *     http://www.latex-project.org/lppl.txt          *
+-- * either version 1.3c of this license or any later   *
+-- * version.                                           *
+-- ******************************************************
+--
+-- Run this file with `texlua'.
 
-tex_info = [===[%% <FILE> unimath-plain-xetex-alphabet
-%% ******************************************************
-%% * This work may be distributed and/or modified under *
-%% * the conditions of the LaTeX Project Public License *
-%% *     http://www.latex-project.org/lppl.txt          *
-%% * either version 1.3c of this license or any later   *
-%% * version.                                           *
-%% ******************************************************]===]
+function which(obj)
+    if package.config:sub(1, 1) == "\\" then
+        return string.sub(io.popen("where "..obj):read("*all"), 1, -2) -- Windows
+    else
+        return string.sub(io.popen("which "..obj):read("*all"), 1, -2) -- *nix
+    end
+end
+
+kpse.set_program_name(which("kpsewhich"))
 
 Latin = { {"A", "0041", "A"}, {"B", "0042", "B"}, {"C", "0043", "C"}, {"D", "0044", "D"},
           {"E", "0045", "E"}, {"F", "0046", "F"}, {"G", "0047", "G"}, {"H", "0048", "H"},
@@ -113,18 +119,18 @@ end
 
 os.remove(tmp_alpha_table)
 
-batch_command = [===[teckit_compile unimath-it.map -o unimath-it.tec
-teckit_compile unimath-bf.map -o unimath-bf.tec
-teckit_compile unimath-sf.map -o unimath-sf.tec
-teckit_compile unimath-tt.map -o unimath-tt.tec
-teckit_compile unimath-bfit.map -o unimath-bfit.tec
-teckit_compile unimath-sfit.map -o unimath-sfit.tec
-teckit_compile unimath-sfbf.map -o unimath-sfbf.tec
-teckit_compile unimath-sfbfit.map -o unimath-sfbfit.tec
-teckit_compile unimath-scr.map -o unimath-scr.tec
-teckit_compile unimath-bb.map -o unimath-bb.tec
-teckit_compile unimath-frak.map -o unimath-frak.tec
-teckit_compile unimath-scrbf.map -o unimath-scrbf.tec
-teckit_compile unimath-frakbf.map -o unimath-frakbf.tec
-teckit_compile unimath-bbit.map -o unimath-bbit.tec
-]===]
+-- batch_command = [===[teckit_compile unimath-it.map -o unimath-it.tec
+-- teckit_compile unimath-bf.map -o unimath-bf.tec
+-- teckit_compile unimath-sf.map -o unimath-sf.tec
+-- teckit_compile unimath-tt.map -o unimath-tt.tec
+-- teckit_compile unimath-bfit.map -o unimath-bfit.tec
+-- teckit_compile unimath-sfit.map -o unimath-sfit.tec
+-- teckit_compile unimath-sfbf.map -o unimath-sfbf.tec
+-- teckit_compile unimath-sfbfit.map -o unimath-sfbfit.tec
+-- teckit_compile unimath-scr.map -o unimath-scr.tec
+-- teckit_compile unimath-bb.map -o unimath-bb.tec
+-- teckit_compile unimath-frak.map -o unimath-frak.tec
+-- teckit_compile unimath-scrbf.map -o unimath-scrbf.tec
+-- teckit_compile unimath-frakbf.map -o unimath-frakbf.tec
+-- teckit_compile unimath-bbit.map -o unimath-bbit.tec
+-- ]===]
