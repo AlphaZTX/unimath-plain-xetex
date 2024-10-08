@@ -1,5 +1,16 @@
+*.pdf
+
 ## macOS X
 .DS_Store
+
+## teckit mapping for XeTeX
+*.map
+*.tec
+
+## TDS tree
+unimath-plain-xetex
+*.tar.gz
+*.tgz
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

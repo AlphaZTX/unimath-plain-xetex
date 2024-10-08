@@ -1,10 +1,18 @@
 # unimath-plain-xetex
 
-This package provides OpenType math support in (plain) XeTeX. See `unimath-plain-xetex-doc.pdf` for more information.
+## About
 
-If anybody wants to maintain this package, please email `alphaztx at 163 dot com`.
+This package provides OpenType math support in (plain) XeTeX.
+See `unimath-plain-xetex-doc.pdf` for more information.
 
 Happy TeXing!
+
+## Build
+
+We need to use `texlua` to generate source files.
+Make sure that TeX Live is installed in your device.
+To build the package, run `./build.sh`, then you will get
+`unimath-plain-xetex.tar.gz`.
 
 ## License
 
