@@ -17,13 +17,13 @@ if [ ! -d "./unimath-plain-xetex" ]; then
   mkdir ./unimath-plain-xetex/doc
   mkdir ./unimath-plain-xetex/fonts
 fi
-cp -r README.md ./unimath-plain-xetex
-cp -r unimath-plain-xetex.tex ./unimath-plain-xetex/tex
-cp -r unimath-plain-xetex-doc.tex ./unimath-plain-xetex/doc
-cp -r unimath-plain-xetex-doc.pdf ./unimath-plain-xetex/doc
+cp README.md ./unimath-plain-xetex
+cp unimath-plain-xetex.tex ./unimath-plain-xetex/tex
+cp unimath-plain-xetex-doc.tex ./unimath-plain-xetex/doc
+cp unimath-plain-xetex-doc.pdf ./unimath-plain-xetex/doc
 mv -f *.map ./unimath-plain-xetex/fonts
 mv -f *.tec ./unimath-plain-xetex/fonts
 
 # tar
-tar --exclude ".DS_Store" --exclude "__MACOSX" -cvzf "unimath-plain-xetex.tar.gz" "./unimath-plain-xetex"
+COPYFILE_DISABLE=1 tar --exclude ".DS_Store" --exclude "__MACOSX" -cvzf "unimath-plain-xetex.tar.gz" "./unimath-plain-xetex"
 rm -rf ./unimath-plain-xetex
